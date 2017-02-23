@@ -8,4 +8,4 @@ slack_sirbot:
   plugins:
   - slack_sirbot.channel
   - slack_sirbot.user
-  - slack_sirbot.example
+  - sirbot_plugin_pythondev
