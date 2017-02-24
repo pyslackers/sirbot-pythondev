@@ -1,4 +1,5 @@
 import re
+import asyncio
 
 from slack_sirbot.hookimpl import hookimpl
 from slack_sirbot.message import Attachment, SlackMessage
@@ -37,6 +38,7 @@ async def team_join(event, slack, *_):
     message = SlackMessage()
     message.to = await slack.users.get(event['user']['id'])
     message.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'
+    await asyncio.sleep(60)
     await slack.send(message)
 
 
