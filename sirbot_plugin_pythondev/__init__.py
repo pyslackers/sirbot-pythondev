@@ -23,6 +23,16 @@ async def admin(message, slack, *_):
     await slack.send(message)
 
 
+async def intro_doc(message, slack, *_):
+    message.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'
+    await slack.send(message)
+
+
+async def what_to_do(message, slack, *_):
+    message.text = 'https://pythondev.slack.com/files/ndevox/F4A137J0J/What_to_do_next_on_your_Python_journey'
+    await slack.send(message)
+
+
 @hookimpl
 def register_slack_messages():
     commands = [
@@ -35,6 +45,18 @@ def register_slack_messages():
         {
             'match': 'admin.*',
             'func': admin,
+            'on_mention': True,
+            'flags': re.IGNORECASE
+        },
+        {
+            'match': 'intro doc',
+            'func': intro_doc,
+            'on_mention': True,
+            'flags': re.IGNORECASE
+        },
+        {
+            'match': 'what to do',
+            'func': what_to_do,
             'on_mention': True,
             'flags': re.IGNORECASE
         }
