@@ -33,6 +33,11 @@ async def what_to_do(message, slack, *_):
     await slack.send(message)
 
 
+async def team_join(message, slack, *_):
+    message.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'
+    await slack.send(message)
+
+
 @hookimpl
 def register_slack_messages():
     commands = [
@@ -63,3 +68,13 @@ def register_slack_messages():
     ]
 
     return commands
+
+
+@hookimpl
+def register_slack_events():
+    commands = [
+        {
+            'name': 'team_join',
+            'func': team_join
+        }
+    ]
