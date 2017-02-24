@@ -1,7 +1,7 @@
 import re
 
 from slack_sirbot.hookimpl import hookimpl
-from slack_sirbot.message import Attachment
+from slack_sirbot.message import Attachment, SlackMessage
 
 
 async def hello(message, slack, *_):
@@ -33,7 +33,9 @@ async def what_to_do(message, slack, *_):
     await slack.send(message)
 
 
-async def team_join(message, slack, *_):
+async def team_join(event, slack, *_):
+    message = SlackMessage()
+    message.to = await slack.users.get(event['user']['id'])
     message.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'
     await slack.send(message)
 
@@ -78,3 +80,5 @@ def register_slack_events():
             'func': team_join
         }
     ]
+
+    return commands
