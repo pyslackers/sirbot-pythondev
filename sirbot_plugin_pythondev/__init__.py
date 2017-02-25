@@ -1,8 +1,8 @@
 import re
 import asyncio
 
-from slack_sirbot.hookimpl import hookimpl
-from slack_sirbot.message import Attachment, SlackMessage
+from sirbot_plugin_slack.hookimpl import hookimpl
+from sirbot_plugin_slack.message import Attachment, SlackMessage
 
 
 async def hello(message, slack, *_):
