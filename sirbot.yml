@@ -3,7 +3,7 @@ core:
   loglevel: 10
   plugins:
     - sirbot_plugin_slack
-slack_sirbot:
+sirbot_plugin_slack:
   loglevel: 10
   plugins:
   - sirbot_plugin_slack.channel
