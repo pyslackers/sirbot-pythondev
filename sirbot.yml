@@ -1,11 +1,11 @@
 loglevel: 10
 core:
-  loglevel: 20
+  loglevel: 10
   plugins:
-    - slack_sirbot
+    - sirbot_plugin_slack
 slack_sirbot:
   loglevel: 10
   plugins:
-  - slack_sirbot.channel
-  - slack_sirbot.user
+  - sirbot_plugin_slack.channel
+  - sirbot_plugin_slack.user
   - sirbot_plugin_pythondev

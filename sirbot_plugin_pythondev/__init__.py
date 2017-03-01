@@ -2,7 +2,7 @@ import re
 import asyncio
 
 from sirbot_plugin_slack.hookimpl import hookimpl
-from sirbot_plugin_slack.message import Attachment, SlackMessage
+from sirbot_plugin_slack.message import Attachment, SlackMessage, Field
 
 
 async def hello(message, slack, *_):
@@ -42,9 +42,29 @@ async def team_join(event, slack, *_):
     await slack.send(message)
 
 
+async def help_(message, slack, *_):
+    message.text = 'Help of the good Sir-bot-a-lot'
+
+    help_msg = Attachment(fallback='help', color='good')
+    hello_help = Field(title='Hello', value='Say hello to Sir-bot-a-lot.\n`@sir-bot-a-lot hello`', short=True)
+    admin_help = Field(title='Admin', value='Send a message to the pythondev admin team.\n `@sir-bot-a-lot admin ...`', short=True)
+    intro_doc_help = Field(title='Intro doc', value='Link the intro doc.\n `@sir-bot-a-lot intro doc`', short=True)
+    what_to_do_help = Field(title='What to do', value='Link the what to do doc.\n `@sir-bot-a-lot what to do`', short=True)
+
+    help_msg.fields.extend((hello_help, admin_help, intro_doc_help, what_to_do_help))
+    message.attachments.append(help_msg)
+    await slack.send(message)
+
+
 @hookimpl
 def register_slack_messages():
     commands = [
+        {
+            'match': 'help',
+            'func': help_,
+            'on_mention': True,
+            'flags': re.IGNORECASE
+        },
         {
             'match': 'hello',
             'func': hello,
