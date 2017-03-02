@@ -24,7 +24,7 @@ async def admin(message, slack, *_):
 
     admin_message = message.clone()
     admin_message.attachments.append(att)
-    admin_message.to = await slack.channels.get(name='admin')
+    admin_message.to = await slack.channels.get(name='admin', update=False)
     await slack.send(admin_message)
 
     message.text = 'Your message was successfully sent to the admin team'
