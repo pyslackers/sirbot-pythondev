@@ -1,8 +1,15 @@
 import re
 import asyncio
+import logging
+
+from functools import partial
 
 from sirbot_plugin_slack.hookimpl import hookimpl
 from sirbot_plugin_slack.message import Attachment, SlackMessage, Field
+
+from .giphy import Giphy
+
+logger = logging.getLogger('sirbot.pythondev')
 
 
 async def hello(message, slack, *_):
@@ -56,8 +63,18 @@ async def help_(message, slack, *_):
     await slack.send(message)
 
 
+async def gifs(giphy, message, slack, *_):
+    search = message.incoming.text[len('gif search'):].strip().split(' ')
+    url = await giphy.search(search)
+    message.text = url
+    await slack.send(message)
+
+
 @hookimpl
 def register_slack_messages():
+    giphy = Giphy()
+    gifs_func = partial(gifs, giphy)
+
     commands = [
         {
             'match': 'help',
@@ -86,6 +103,12 @@ def register_slack_messages():
         {
             'match': 'what to do',
             'func': what_to_do,
+            'on_mention': True,
+            'flags': re.IGNORECASE
+        },
+        {
+            'match': '^gif search ',
+            'func': gifs_func,
             'on_mention': True,
             'flags': re.IGNORECASE
         }
