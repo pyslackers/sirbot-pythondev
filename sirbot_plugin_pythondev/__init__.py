@@ -7,7 +7,7 @@ from functools import partial
 from sirbot_plugin_slack.hookimpl import hookimpl
 from sirbot_plugin_slack.message import Attachment, SlackMessage, Field
 
-from .giphy import Giphy
+from .giphy import Giphy, gif_random, gif_by_id, gif_search, gif_trending
 
 logger = logging.getLogger('sirbot.pythondev')
 
@@ -52,32 +52,35 @@ async def team_join(event, slack, *_):
 async def help_(message, slack, *_):
     message.text = 'Help of the good Sir-bot-a-lot'
 
-    help_msg = Attachment(fallback='help', color='good')
+    help_msg = Attachment(fallback='help', color='good', title='Common commands')
     hello_help = Field(title='Hello', value='Say hello to Sir-bot-a-lot.\n`@sir-bot-a-lot hello`', short=True)
     admin_help = Field(title='Admin', value='Send a message to the pythondev admin team.\n `@sir-bot-a-lot admin ...`', short=True)
     intro_doc_help = Field(title='Intro doc', value='Link the intro doc.\n `@sir-bot-a-lot intro doc`', short=True)
     what_to_do_help = Field(title='What to do', value='Link the what to do doc.\n `@sir-bot-a-lot what to do`', short=True)
-
     help_msg.fields.extend((hello_help, admin_help, intro_doc_help, what_to_do_help))
-    message.attachments.append(help_msg)
-    await slack.send(message)
 
+    gif_help = Attachment(fallback='gif help', color='good', title='Gif commands')
+    gif_random_help = Field(title='Random', value='Get a random gif.\n`@sir-bot-a-lot gif`', short=True)
+    gif_search_help = Field(title='Search', value='Search for a gif.\n`@sir-bot-a-lot gif search ...`', short=True)
+    gif_trending_help = Field(title='Trending', value='Get a trending gif.\n`@sir-bot-a-lot gif trending`', short=True)
+    gif_by_id_help = Field(title='By ID', value='''Get a gif by it's id.\n`@sir-bot-a-lot gif <gif_id>`''', short=True)
+    gif_help.fields.extend((gif_random_help, gif_search_help, gif_trending_help, gif_by_id_help))
 
-async def gifs(giphy, message, slack, *_):
-    search = message.incoming.text[len('gif search'):].strip().split(' ')
-    url = await giphy.search(search)
-    message.text = url
+    message.attachments.extend((help_msg, gif_help))
     await slack.send(message)
 
 
 @hookimpl
 def register_slack_messages():
     giphy = Giphy()
-    gifs_func = partial(gifs, giphy)
+    gif_random_partial = partial(gif_random, giphy)
+    gif_search_partial = partial(gif_search, giphy)
+    gif_trending_partial = partial(gif_trending, giphy)
+    gif_by_id_partial = partial(gif_by_id, giphy)
 
     commands = [
         {
-            'match': 'help',
+            'match': '^help',
             'func': help_,
             'on_mention': True,
             'flags': re.IGNORECASE
@@ -89,7 +92,7 @@ def register_slack_messages():
             'flags': re.IGNORECASE
         },
         {
-            'match': 'admin.*',
+            'match': '^admin.*',
             'func': admin,
             'on_mention': True,
             'flags': re.IGNORECASE
@@ -108,7 +111,25 @@ def register_slack_messages():
         },
         {
             'match': '^gif search ',
-            'func': gifs_func,
+            'func': gif_search_partial,
+            'on_mention': True,
+            'flags': re.IGNORECASE
+        },
+        {
+            'match': '^gif$',
+            'func': gif_random_partial,
+            'on_mention': True,
+            'flags': re.IGNORECASE
+        },
+        {
+            'match': '^gif trending$',
+            'func': gif_trending_partial,
+            'on_mention': True,
+            'flags': re.IGNORECASE
+        },
+        {
+            'match': '^gif (?!search)(?!trending).*',
+            'func': gif_by_id_partial,
             'on_mention': True,
             'flags': re.IGNORECASE
         }
