@@ -73,10 +73,10 @@ async def help_(message, slack, *_):
 @hookimpl
 def register_slack_messages():
     giphy = Giphy()
-    gif_random_partial = partial(gif_random, giphy)
-    gif_search_partial = partial(gif_search, giphy)
-    gif_trending_partial = partial(gif_trending, giphy)
-    gif_by_id_partial = partial(gif_by_id, giphy)
+    gif_random_partial = asyncio.coroutine(partial(gif_random, giphy))
+    gif_search_partial = asyncio.coroutine(partial(gif_search, giphy))
+    gif_trending_partial = asyncio.coroutine(partial(gif_trending, giphy))
+    gif_by_id_partial = asyncio.coroutine(partial(gif_by_id, giphy))
 
     commands = [
         {

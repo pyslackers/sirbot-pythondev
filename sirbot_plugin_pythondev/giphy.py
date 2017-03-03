@@ -10,7 +10,7 @@ logger = logging.getLogger('sirbot.pythondev')
 class Giphy:
 
     ROOT_URL = 'http://api.giphy.com/v1/{}'
-    SEARCH_TERM_URL = ROOT_URL.format('gifs/search?q={terms}')
+    SEARCH_TERM_URL = ROOT_URL.format('gifs/translate?s={terms}')
     TRENDING_URL = ROOT_URL.format('gifs/trending?')
     RANDOM_URL = ROOT_URL.format('gifs/random?')
     BY_ID_URL = ROOT_URL.format('gifs/{gif_id}?')
@@ -21,8 +21,7 @@ class Giphy:
 
     async def search(self, terms):
         data = await self._query(self.SEARCH_TERM_URL.format(terms='+'.join(terms)))
-        num = random.randint(0, len(data['data']) - 1)
-        return data['data'][num]['images']['original']['url']
+        return data['data']['images']['original']['url']
 
     async def trending(self):
         data = await self._query(self.TRENDING_URL)
