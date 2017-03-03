@@ -2,7 +2,11 @@ import os
 import aiohttp
 import logging
 import random
-import pprint
+import re
+import asyncio
+import functools
+
+from sirbot_plugin_slack.hookimpl import hookimpl
 
 logger = logging.getLogger('sirbot.pythondev')
 
@@ -79,3 +83,41 @@ async def gif_by_id(giphy, message, slack, *_):
     except ConnectionError:
         message.text = '''I'm sorry I could not find this gif'''
     await slack.send(message)
+
+
+@hookimpl
+def register_slack_messages():
+    giphy = Giphy()
+    gif_random_partial = asyncio.coroutine(functools.partial(gif_random, giphy))
+    gif_search_partial = asyncio.coroutine(functools.partial(gif_search, giphy))
+    gif_trending_partial = asyncio.coroutine(functools.partial(gif_trending, giphy))
+    gif_by_id_partial = asyncio.coroutine(functools.partial(gif_by_id, giphy))
+
+    commands = [
+        {
+            'match': '^gif search ',
+            'func': gif_search_partial,
+            'on_mention': True,
+            'flags': re.IGNORECASE
+        },
+        {
+            'match': '^gif$',
+            'func': gif_random_partial,
+            'on_mention': True,
+            'flags': re.IGNORECASE
+        },
+        {
+            'match': '^gif trending$',
+            'func': gif_trending_partial,
+            'on_mention': True,
+            'flags': re.IGNORECASE
+        },
+        {
+            'match': '^gif (?!search)(?!trending).*',
+            'func': gif_by_id_partial,
+            'on_mention': True,
+            'flags': re.IGNORECASE
+        }
+    ]
+
+    return commands

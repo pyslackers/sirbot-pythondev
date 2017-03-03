@@ -7,8 +7,6 @@ from functools import partial
 from sirbot_plugin_slack.hookimpl import hookimpl
 from sirbot_plugin_slack.message import Attachment, SlackMessage, Field
 
-from .giphy import Giphy, gif_random, gif_by_id, gif_search, gif_trending
-
 logger = logging.getLogger('sirbot.pythondev')
 
 
@@ -72,12 +70,6 @@ async def help_(message, slack, *_):
 
 @hookimpl
 def register_slack_messages():
-    giphy = Giphy()
-    gif_random_partial = asyncio.coroutine(partial(gif_random, giphy))
-    gif_search_partial = asyncio.coroutine(partial(gif_search, giphy))
-    gif_trending_partial = asyncio.coroutine(partial(gif_trending, giphy))
-    gif_by_id_partial = asyncio.coroutine(partial(gif_by_id, giphy))
-
     commands = [
         {
             'match': '^help',
@@ -106,30 +98,6 @@ def register_slack_messages():
         {
             'match': 'what to do',
             'func': what_to_do,
-            'on_mention': True,
-            'flags': re.IGNORECASE
-        },
-        {
-            'match': '^gif search ',
-            'func': gif_search_partial,
-            'on_mention': True,
-            'flags': re.IGNORECASE
-        },
-        {
-            'match': '^gif$',
-            'func': gif_random_partial,
-            'on_mention': True,
-            'flags': re.IGNORECASE
-        },
-        {
-            'match': '^gif trending$',
-            'func': gif_trending_partial,
-            'on_mention': True,
-            'flags': re.IGNORECASE
-        },
-        {
-            'match': '^gif (?!search)(?!trending).*',
-            'func': gif_by_id_partial,
             'on_mention': True,
             'flags': re.IGNORECASE
         }
