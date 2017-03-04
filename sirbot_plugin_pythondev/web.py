@@ -8,8 +8,8 @@ async def test(request, facades):
     msg = SlackMessage()
     msg.to = await slack.channels.get(name='bots')
     msg.text = 'Test web url'
-    await slack.send(msg)
-    return Response(text='ok')
+    # await slack.send(msg)
+    return Response(text='Disabled')
 
 
 @hookimpl
