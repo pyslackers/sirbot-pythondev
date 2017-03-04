@@ -11,6 +11,7 @@ sirbot_plugin_slack:
   - sirbot_plugin_slack.user
   - sirbot_plugin_pythondev
   - sirbot_plugin_pythondev.giphy
+  - sirbot_plugin_pythondev.pypi
 sirbot_plugin_web:
   loglevel: 10
   plugins:
