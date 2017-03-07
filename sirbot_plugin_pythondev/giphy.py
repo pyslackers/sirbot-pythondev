@@ -11,71 +11,27 @@ from sirbot_plugin_slack.hookimpl import hookimpl
 logger = logging.getLogger('sirbot.pythondev')
 
 
-class Giphy:
-
-    ROOT_URL = 'http://api.giphy.com/v1/{}'
-    SEARCH_TERM_URL = ROOT_URL.format('gifs/translate?s={terms}')
-    TRENDING_URL = ROOT_URL.format('gifs/trending?')
-    RANDOM_URL = ROOT_URL.format('gifs/random?')
-    BY_ID_URL = ROOT_URL.format('gifs/{gif_id}?')
-
-    def __init__(self):
-        self._token = os.environ.get('SIRBOT_GIPHY_TOKEN') or "dc6zaTOxFJmzC"
-        self._session = aiohttp.ClientSession()
-
-    async def search(self, terms):
-        data = await self._query(self.SEARCH_TERM_URL.format(terms='+'.join(terms)))
-        return data['data']['images']['original']['url']
-
-    async def trending(self):
-        data = await self._query(self.TRENDING_URL)
-        num = random.randint(0, len(data['data']) - 1)
-        return data['data'][num]['images']['original']['url']
-
-    async def random(self):
-        data = await self._query(self.RANDOM_URL)
-        num = random.randint(0, len(data['data']) - 1)
-        return data['data']['image_url']
-
-    async def by_id(self, id_):
-        data = await self._query(self.BY_ID_URL.format(gif_id=id_))
-        return data['data']['images']['original']['url']
-
-    async def _query(self, url, method='GET'):
-        if url.endswith('?'):
-            url += 'api_key={}'.format(self._token)
-        else:
-            url += '&api_key={}'.format(self._token)
-
-        logger.debug('Query giphy api with url: %s', url)
-        rep = await self._session.request(method, url)
-        data = await rep.json()
-
-        if data['meta']['status'] != 200:
-            raise ConnectionError
-        return data
-
-    def __del__(self):
-        self._session.close()
-
-
-async def gif_search(giphy, message, slack, *_):
+async def gif_search(message, slack, facades, *_):
+    giphy = facades.get('giphy')
     search = message.incoming.text[10:].strip().split(' ')
     url = await giphy.search(search)
     message.text = url
     await slack.send(message)
 
-async def gif_trending(giphy, message, slack, *_):
+async def gif_trending(message, slack, facades, *_):
+    giphy = facades.get('giphy')
     url = await giphy.trending()
     message.text = url
     await slack.send(message)
 
-async def gif_random(giphy, message, slack, *_):
+async def gif_random(message, slack, facades, *_):
+    giphy = facades.get('giphy')
     url = await giphy.random()
     message.text = url
     await slack.send(message)
 
-async def gif_by_id(giphy, message, slack, *_):
+async def gif_by_id(message, slack, facades, *_):
+    giphy = facades.get('giphy')
     id_ = message.incoming.text[3:].strip()
     try:
         url = await giphy.by_id(id_)
@@ -87,34 +43,29 @@ async def gif_by_id(giphy, message, slack, *_):
 
 @hookimpl
 def register_slack_messages():
-    giphy = Giphy()
-    gif_random_partial = asyncio.coroutine(functools.partial(gif_random, giphy))
-    gif_search_partial = asyncio.coroutine(functools.partial(gif_search, giphy))
-    gif_trending_partial = asyncio.coroutine(functools.partial(gif_trending, giphy))
-    gif_by_id_partial = asyncio.coroutine(functools.partial(gif_by_id, giphy))
 
     commands = [
         {
             'match': '^gif search ',
-            'func': gif_search_partial,
+            'func': gif_search,
             'on_mention': True,
             'flags': re.IGNORECASE
         },
         {
             'match': '^gif$',
-            'func': gif_random_partial,
+            'func': gif_random,
             'on_mention': True,
             'flags': re.IGNORECASE
         },
         {
             'match': '^gif trending$',
-            'func': gif_trending_partial,
+            'func': gif_trending,
             'on_mention': True,
             'flags': re.IGNORECASE
         },
         {
             'match': '^gif (?!search)(?!trending).*',
-            'func': gif_by_id_partial,
+            'func': gif_by_id,
             'on_mention': True,
             'flags': re.IGNORECASE
         }

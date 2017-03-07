@@ -2,8 +2,6 @@ import re
 import asyncio
 import logging
 
-from functools import partial
-
 from sirbot_plugin_slack.hookimpl import hookimpl
 from sirbot_plugin_slack.message import Attachment, SlackMessage, Field
 
