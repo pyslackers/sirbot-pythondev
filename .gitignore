@@ -125,4 +125,4 @@ venv/
 debian/
 .pyvenv/
 __pycache__/*
-sirbot-error-log*
+sirbot.log

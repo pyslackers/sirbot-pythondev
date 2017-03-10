@@ -22,7 +22,7 @@ logging:
       stream: ext://sys.stdout
     file:
       class: logging.handlers.RotatingFileHandler
-      filename: sirbot-error-log.txt
+      filename: /home/sirbot/sirbot.log
       maxBytes: 1024
       backupCount: 7
       level: WARNING
