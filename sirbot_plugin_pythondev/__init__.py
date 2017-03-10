@@ -15,7 +15,7 @@ async def hello(message, slack, *_):
 
 async def admin(message, slack, *_):
     incoming_text = message.incoming.text[5:].strip()
-    title = 'New message from <@{frm}>'.format(frm=message.incoming.frm)
+    title = 'New message from <@{frm}>'.format(frm=message.incoming.frm.id)
     att = Attachment(title=title, fallback=title, text=incoming_text)
 
     admin_message = message.clone()
