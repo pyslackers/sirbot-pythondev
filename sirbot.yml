@@ -1,13 +1,40 @@
-loglevel: 10
 core:
-  loglevel: 10
   plugins:
     - sirbot_plugin_slack
     - sirbot_plugin.giphy
     - sirbot_plugin.pypi
 sirbot_plugin_slack:
-  loglevel: 10
   plugins:
   - sirbot_plugin_pythondev
   - sirbot_plugin_pythondev.giphy
   - sirbot_plugin_pythondev.pypi
+
+logging:
+  version: 1
+  formatters:
+    simple:
+      format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  handlers:
+    console:
+      class: logging.StreamHandler
+      level: DEBUG
+      formatter: simple
+      stream: ext://sys.stdout
+    file:
+      class: logging.handlers.RotatingFileHandler
+      filename: sirbot-error-log.txt
+      maxBytes: 1024
+      backupCount: 7
+      level: WARNING
+      formatter: simple
+  loggers:
+    sirbot:
+      level: DEBUG
+      handlers: [file]
+      propagate: no
+    sirbot.core:
+      level: DEBUG
+      handlers: [console]
+    sirbot.slack:
+      level: DEBUG
+      handlers: [console]
