@@ -39,7 +39,7 @@ async def what_to_do(message, slack, *_):
 
 async def team_join(event, slack, *_):
     message = SlackMessage()
-    message.to = await slack.users.get(event['user']['id'])
+    message.to = await slack.users.get(event['user']['id'], dm=True)
     message.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'
     await asyncio.sleep(60)
     await slack.send(message)

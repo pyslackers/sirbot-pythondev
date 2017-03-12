@@ -3,6 +3,7 @@ core:
     - sirbot_plugin_slack
     - sirbot_plugin.giphy
     - sirbot_plugin.pypi
+
 sirbot_plugin_slack:
   plugins:
   - sirbot_plugin_pythondev
@@ -23,7 +24,7 @@ logging:
     file:
       class: logging.handlers.RotatingFileHandler
       filename: /home/sirbot/sirbot.log
-      maxBytes: 1024
+      maxBytes: 5242880
       backupCount: 7
       level: WARNING
       formatter: simple
