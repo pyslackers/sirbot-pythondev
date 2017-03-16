@@ -5,6 +5,7 @@ core:
     - sirbot_plugin.pypi
 
 sirbot_plugin_slack:
+  priority: 80
   plugins:
   - sirbot_plugin_pythondev
   - sirbot_plugin_pythondev.giphy
