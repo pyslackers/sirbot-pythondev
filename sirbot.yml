@@ -3,13 +3,19 @@ core:
     - sirbot_plugin_slack
     - sirbot_plugin.giphy
     - sirbot_plugin.pypi
+    - sirbot_plugin.sqlite
 
 sirbot_plugin_slack:
-  priority: 80
+  store: True
+  priority: 20
   plugins:
   - sirbot_plugin_pythondev
   - sirbot_plugin_pythondev.giphy
   - sirbot_plugin_pythondev.pypi
+
+database:
+  priority: 80
+  file: /home/sirbot/sirbot.db
 
 logging:
   version: 1
