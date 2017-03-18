@@ -4,6 +4,7 @@ core:
     - sirbot_plugin.giphy
     - sirbot_plugin.pypi
     - sirbot_plugin.sqlite
+    - sirbot_plugin.candy
 
 sirbot_plugin_slack:
   store: True
@@ -12,6 +13,7 @@ sirbot_plugin_slack:
   - sirbot_plugin_pythondev
   - sirbot_plugin_pythondev.giphy
   - sirbot_plugin_pythondev.pypi
+  - sirbot_plugin_pythondev.candy
 
 database:
   priority: 80
@@ -44,5 +46,8 @@ logging:
       level: DEBUG
       handlers: [console]
     sirbot.slack:
+      level: DEBUG
+      handlers: [console]
+    sirbot.sqlite:
       level: DEBUG
       handlers: [console]
