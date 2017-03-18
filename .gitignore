@@ -126,3 +126,4 @@ debian/
 .pyvenv/
 __pycache__/*
 sirbot.log
+*.db
