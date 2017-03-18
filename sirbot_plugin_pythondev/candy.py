@@ -6,7 +6,7 @@ from sirbot_plugin_slack.message import Attachment
 
 logger = logging.getLogger('sirbot.candy')
 
-TRIGGER = ':car:'
+TRIGGER = ':bdfl:'
 USER_REGEX = re.compile('<@U.{8}>')
 TRIGGER_REGEX = re.compile(TRIGGER)
 
