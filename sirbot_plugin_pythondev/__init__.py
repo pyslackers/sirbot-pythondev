@@ -13,14 +13,15 @@ async def hello(message, slack, *_):
     await slack.send(message)
 
 
-async def admin(message, slack, *_):
+async def admin(message, slack, _, facades):
     incoming_text = message.incoming.text[5:].strip()
     title = 'New message from <@{frm}>'.format(frm=message.incoming.frm.id)
     att = Attachment(title=title, fallback=title, text=incoming_text)
 
     admin_message = message.clone()
     admin_message.attachments.append(att)
-    admin_message.to = await slack.channels.get(name='admin', update=False)
+    db = facades.get('database')
+    admin_message.to = await slack.channels.get(name='admin', update=False, db=db)
     await slack.send(admin_message)
 
     message.text = 'Your message was successfully sent to the admin team'
