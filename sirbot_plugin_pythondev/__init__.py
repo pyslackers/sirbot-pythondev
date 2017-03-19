@@ -13,7 +13,7 @@ async def hello(message, slack, *_):
     await slack.send(message)
 
 
-async def admin(message, slack, _, facades):
+async def admin(message, slack, facades, _):
     incoming_text = message.incoming.text[5:].strip()
     title = 'New message from <@{frm}>'.format(frm=message.incoming.frm.id)
     att = Attachment(title=title, fallback=title, text=incoming_text)
@@ -38,9 +38,10 @@ async def what_to_do(message, slack, *_):
     await slack.send(message)
 
 
-async def team_join(event, slack, *_):
+async def team_join(event, slack, facades, _):
+    db = facades.get('database')
     message = SlackMessage()
-    message.to = await slack.users.get(event['user']['id'], dm=True)
+    message.to = await slack.users.get(event['user']['id'], dm=True, db=db)
     message.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'
     await asyncio.sleep(60)
     await slack.send(message)

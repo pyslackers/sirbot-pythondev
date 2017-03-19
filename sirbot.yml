@@ -49,5 +49,5 @@ logging:
       level: DEBUG
       handlers: [console]
     sirbot.sqlite:
-      level: DEBUG
+      level: WARNING
       handlers: [console]
