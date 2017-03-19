@@ -38,7 +38,7 @@ async def what_to_do(message, slack, *_):
     await slack.send(message)
 
 
-async def team_join(event, slack, facades, _):
+async def team_join(event, slack, facades):
     db = facades.get('database')
     message = SlackMessage()
     message.to = await slack.users.get(event['user']['id'], dm=True, db=db)
