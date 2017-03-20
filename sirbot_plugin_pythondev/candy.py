@@ -14,6 +14,9 @@ async def add_candy(message, slack, facades, *_):
     candy = facades.get('candy')
     db = facades.get('database')
     users = USER_REGEX.findall(message.incoming.text)
+    if not users:
+        return
+
     count = len(TRIGGER_REGEX.findall(message.incoming.text))
 
     receivers_messages = list()
