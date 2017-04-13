@@ -44,16 +44,25 @@ async def what_to_do(message, slack, *_):
 
 async def publish(message, slack, facades, match):
     db = facades.get('database')
-    channel_id = match.group('channel_id')
-    channel = await slack.channels.get(channel_id, db=db)
+    to_id = match.group('to_id')
     item = match.group('item')
 
-    if channel.is_member:
+    if to_id.startswith('C'):
+        to = await slack.channels.get(to_id, db=db)
+        if to.is_member:
+            message.text = PUBLISH_SHORTCUT.get(item, item)
+            message.to = to
+        else:
+            message.text = 'Sorry I can not publish is this channel. I am not a member.'
+            message.to = message.frm
+
+    elif to_id.startswith('U'):
+        to = await slack.users.get(to_id, db=db)
         message.text = PUBLISH_SHORTCUT.get(item, item)
-        message.to = channel
-    elif not channel.is_member:
-        message.text = 'Sorry I can not publish is this channel. I am not a member.'
-        message.to = (await slack.users.get(message.frm.id, db=db, dm=True))
+        message.to = to
+    else:
+        message.text = 'Sorry I can not understand the destination.'
+        message.to = message.frm
 
     await slack.send(message)
 
@@ -124,7 +133,7 @@ def register_slack_messages():
             'flags': re.IGNORECASE
         },
         {
-            'match': 'publish in (<#(?P<channel_id>[A-Z0-9]*)\|(\w*)>) (?P<item>.*)',
+            'match': '(publish|send) (in|to) (<(#|@)(?P<to_id>[A-Z0-9]*)(|.*)?>) (?P<item>.*)',
             'func': publish,
             'mention': True,
             'flags': re.IGNORECASE,
