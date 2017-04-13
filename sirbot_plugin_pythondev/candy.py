@@ -57,7 +57,6 @@ async def leaderboard(message, slack, facades, *_):
         slack_user = await slack.users.get(user['user'], db=db, update=True)
         att.data['text'] += '{} *{}*\n'.format(slack_user.slack_data['name'], user['candy'])
 
-
     message.attachments.append(att)
     await slack.send(message)
 
@@ -72,7 +71,7 @@ def register_slack_messages():
         {
             'match': 'leaderboard',
             'func': leaderboard,
-            'on_mention': True,
+            'mention': True,
             'flags': re.IGNORECASE
         }
     ]

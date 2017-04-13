@@ -48,25 +48,25 @@ def register_slack_messages():
         {
             'match': '^gif search ',
             'func': gif_search,
-            'on_mention': True,
+            'mention': True,
             'flags': re.IGNORECASE
         },
         {
             'match': '^gif$',
             'func': gif_random,
-            'on_mention': True,
+            'mention': True,
             'flags': re.IGNORECASE
         },
         {
             'match': '^gif trending$',
             'func': gif_trending,
-            'on_mention': True,
+            'mention': True,
             'flags': re.IGNORECASE
         },
         {
             'match': '^gif (?!search)(?!trending).*',
             'func': gif_by_id,
-            'on_mention': True,
+            'mention': True,
             'flags': re.IGNORECASE
         }
     ]
