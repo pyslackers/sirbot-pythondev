@@ -7,6 +7,10 @@ from sirbot_plugin_slack.message import Attachment, SlackMessage, Field
 
 logger = logging.getLogger('sirbot.pythondev')
 
+PUBLISH_SHORTCUT = {
+    '$feedback': 'https://docs.google.com/forms/d/e/1FAIpQLSfuM15Y5ObMDgFKOpeOEjYhUm9h4QW4VQ7mBXWcs9oOrjt0EQ/viewform?usp=sf_link'  # noqa
+}
+
 
 async def hello(message, slack, *_):
     message.text = 'Hello'
@@ -38,6 +42,22 @@ async def what_to_do(message, slack, *_):
     await slack.send(message)
 
 
+async def publish(message, slack, facades, match):
+    db = facades.get('database')
+    channel_id = match.group('channel_id')
+    channel = await slack.channels.get(channel_id, db=db)
+    item = match.group('item')
+
+    if channel.is_member:
+        message.text = PUBLISH_SHORTCUT.get(item, item)
+        message.to = channel
+    elif not channel.is_member:
+        message.text = 'Sorry I can not publish is this channel. I am not a member.'
+        message.to = (await slack.users.get(message.frm.id, db=db, dm=True))
+
+    await slack.send(message)
+
+
 async def team_join(event, slack, facades):
     db = facades.get('database')
     message = SlackMessage()
@@ -52,9 +72,11 @@ async def help_(message, slack, *_):
 
     help_msg = Attachment(fallback='help', color='good', title='Common commands')
     hello_help = Field(title='Hello', value='Say hello to Sir-bot-a-lot.\n`@sir-bot-a-lot hello`', short=True)
-    admin_help = Field(title='Admin', value='Send a message to the pythondev admin team.\n `@sir-bot-a-lot admin ...`', short=True)
+    admin_help = Field(title='Admin', value='Send a message to the pythondev admin team.\n `@sir-bot-a-lot admin ...`',
+                       short=True)
     intro_doc_help = Field(title='Intro doc', value='Link the intro doc.\n `@sir-bot-a-lot intro doc`', short=True)
-    what_to_do_help = Field(title='What to do', value='Link the what to do doc.\n `@sir-bot-a-lot what to do`', short=True)
+    what_to_do_help = Field(title='What to do', value='Link the what to do doc.\n `@sir-bot-a-lot what to do`',
+                            short=True)
     help_msg.fields.extend((hello_help, admin_help, intro_doc_help, what_to_do_help))
 
     gif_help = Attachment(fallback='gif help', color='good', title='Gif commands')
@@ -74,32 +96,40 @@ def register_slack_messages():
         {
             'match': '^help',
             'func': help_,
-            'on_mention': True,
+            'mention': True,
             'flags': re.IGNORECASE
         },
         {
             'match': 'hello',
             'func': hello,
-            'on_mention': True,
+            'mention': True,
             'flags': re.IGNORECASE
         },
         {
             'match': '^admin.*',
             'func': admin,
-            'on_mention': True,
+            'mention': True,
             'flags': re.IGNORECASE
         },
         {
             'match': 'intro doc',
             'func': intro_doc,
-            'on_mention': True,
+            'mention': True,
             'flags': re.IGNORECASE
         },
         {
             'match': 'what to do',
             'func': what_to_do,
-            'on_mention': True,
+            'mention': True,
             'flags': re.IGNORECASE
+        },
+        {
+            'match': 'publish in (<#(?P<channel_id>[A-Z0-9]*)\|(\w*)>) (?P<item>.*)',
+            'func': publish,
+            'mention': True,
+            'flags': re.IGNORECASE,
+            'admin': True
+
         }
     ]
 

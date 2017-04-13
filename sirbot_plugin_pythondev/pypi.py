@@ -44,7 +44,7 @@ def register_slack_messages():
         {
             'match': '^pypi search ',
             'func': pypi_search,
-            'on_mention': True,
+            'mention': True,
             'flags': re.IGNORECASE
         },
     ]
