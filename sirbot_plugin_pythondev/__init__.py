@@ -57,7 +57,7 @@ async def publish(message, slack, facades, match):
             message.to = message.frm
 
     elif to_id.startswith('U'):
-        to = await slack.users.get(to_id, db=db)
+        to = await slack.users.get(to_id, db=db, dm=True)
         message.text = PUBLISH_SHORTCUT.get(item, item)
         message.to = to
     else:
@@ -133,7 +133,7 @@ def register_slack_messages():
             'flags': re.IGNORECASE
         },
         {
-            'match': '(publish|send) (in|to) (<(#|@)(?P<to_id>[A-Z0-9]*)(|.*)?>) (?P<item>.*)',
+            'match': 'tell (<(#|@)(?P<to_id>[A-Z0-9]*)(|.*)?>) (?P<item>.*)',
             'func': publish,
             'mention': True,
             'flags': re.IGNORECASE,
