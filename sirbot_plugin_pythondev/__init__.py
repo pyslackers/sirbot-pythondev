@@ -139,7 +139,7 @@ def register_slack_messages():
             'flags': re.IGNORECASE,
             'admin': True
 
-        }
+        },
     ]
 
     return commands
