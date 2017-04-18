@@ -1,6 +1,6 @@
-import re
 import asyncio
 import logging
+import re
 
 from sirbot_plugin_slack.hookimpl import hookimpl
 from sirbot_plugin_slack.message import Attachment, SlackMessage, Field
@@ -24,8 +24,7 @@ async def admin(message, slack, facades, _):
 
     admin_message = message.clone()
     admin_message.attachments.append(att)
-    db = facades.get('database')
-    admin_message.to = await slack.channels.get(name='admin', update=False, db=db)
+    admin_message.to = await slack.channels.get(name='admin', update=False)
     await slack.send(admin_message)
 
     message.text = 'Your message was successfully sent to the admin team'
@@ -42,13 +41,12 @@ async def what_to_do(message, slack, *_):
     await slack.send(message)
 
 
-async def publish(message, slack, facades, match):
-    db = facades.get('database')
+async def publish(message, slack, _, match):
     to_id = match.group('to_id')
     item = match.group('item')
 
     if to_id.startswith('C'):
-        to = await slack.channels.get(to_id, db=db)
+        to = await slack.channels.get(to_id)
         if to.is_member:
             message.text = PUBLISH_SHORTCUT.get(item, item)
             message.to = to
@@ -57,7 +55,7 @@ async def publish(message, slack, facades, match):
             message.to = message.frm
 
     elif to_id.startswith('U'):
-        to = await slack.users.get(to_id, db=db, dm=True)
+        to = await slack.users.get(to_id, dm=True)
         message.text = PUBLISH_SHORTCUT.get(item, item)
         message.to = to
     else:
@@ -67,10 +65,9 @@ async def publish(message, slack, facades, match):
     await slack.send(message)
 
 
-async def team_join(event, slack, facades):
-    db = facades.get('database')
+async def team_join(event, slack, _):
     message = SlackMessage()
-    message.to = await slack.users.get(event['user']['id'], dm=True, db=db)
+    message.to = await slack.users.get(event['user']['id'], dm=True)
     message.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'
     await asyncio.sleep(60)
     await slack.send(message)
@@ -79,21 +76,39 @@ async def team_join(event, slack, facades):
 async def help_(message, slack, *_):
     message.text = 'Help of the good Sir-bot-a-lot'
 
-    help_msg = Attachment(fallback='help', color='good', title='Common commands')
-    hello_help = Field(title='Hello', value='Say hello to Sir-bot-a-lot.\n`@sir-bot-a-lot hello`', short=True)
-    admin_help = Field(title='Admin', value='Send a message to the pythondev admin team.\n `@sir-bot-a-lot admin ...`',
+    help_msg = Attachment(fallback='help', color='good',
+                          title='Common commands')
+    hello_help = Field(title='Hello',
+                       value='Say hello to Sir-bot-a-lot.\n`@sir-bot-a-lot hello`',
                        short=True)
-    intro_doc_help = Field(title='Intro doc', value='Link the intro doc.\n `@sir-bot-a-lot intro doc`', short=True)
-    what_to_do_help = Field(title='What to do', value='Link the what to do doc.\n `@sir-bot-a-lot what to do`',
+    admin_help = Field(title='Admin',
+                       value='Send a message to the pythondev admin team.\n `@sir-bot-a-lot admin ...`',
+                       short=True)
+    intro_doc_help = Field(title='Intro doc',
+                           value='Link the intro doc.\n `@sir-bot-a-lot intro doc`',
+                           short=True)
+    what_to_do_help = Field(title='What to do',
+                            value='Link the what to do doc.\n `@sir-bot-a-lot what to do`',
                             short=True)
-    help_msg.fields.extend((hello_help, admin_help, intro_doc_help, what_to_do_help))
+    help_msg.fields.extend(
+        (hello_help, admin_help, intro_doc_help, what_to_do_help))
 
-    gif_help = Attachment(fallback='gif help', color='good', title='Gif commands')
-    gif_random_help = Field(title='Random', value='Get a random gif.\n`@sir-bot-a-lot gif`', short=True)
-    gif_search_help = Field(title='Search', value='Search for a gif.\n`@sir-bot-a-lot gif search ...`', short=True)
-    gif_trending_help = Field(title='Trending', value='Get a trending gif.\n`@sir-bot-a-lot gif trending`', short=True)
-    gif_by_id_help = Field(title='By ID', value='''Get a gif by it's id.\n`@sir-bot-a-lot gif <gif_id>`''', short=True)
-    gif_help.fields.extend((gif_random_help, gif_search_help, gif_trending_help, gif_by_id_help))
+    gif_help = Attachment(fallback='gif help', color='good',
+                          title='Gif commands')
+    gif_random_help = Field(title='Random',
+                            value='Get a random gif.\n`@sir-bot-a-lot gif`',
+                            short=True)
+    gif_search_help = Field(title='Search',
+                            value='Search for a gif.\n`@sir-bot-a-lot gif search ...`',
+                            short=True)
+    gif_trending_help = Field(title='Trending',
+                              value='Get a trending gif.\n`@sir-bot-a-lot gif trending`',
+                              short=True)
+    gif_by_id_help = Field(title='By ID',
+                           value='''Get a gif by it's id.\n`@sir-bot-a-lot gif <gif_id>`''',
+                           short=True)
+    gif_help.fields.extend(
+        (gif_random_help, gif_search_help, gif_trending_help, gif_by_id_help))
 
     message.attachments.extend((help_msg, gif_help))
     await slack.send(message)

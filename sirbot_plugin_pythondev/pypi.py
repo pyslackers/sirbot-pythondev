@@ -33,7 +33,8 @@ async def pypi_search(message, slack, facades, *_):
 
         message.text = "Searched PyPi for '{0}'".format(search)
     else:
-        message.text = "Could not find anything on PyPi matching '{0}'".format(search)
+        message.text = "Could not find anything on PyPi matching '{0}'".format(
+            search)
 
     await slack.send(message)
 

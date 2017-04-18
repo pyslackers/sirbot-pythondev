@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import codecs
-from pathlib import Path
 import sys
+from pathlib import Path
 
 from setuptools import setup, convert_path
-
 
 if sys.version_info < (3, 5):
     raise RuntimeError('SirBot requires Python 3.5+')
@@ -20,7 +19,6 @@ def load_package_meta():
 
 
 PKG_META = load_package_meta()
-
 
 requirements = [
     # TODO: put package requirements here

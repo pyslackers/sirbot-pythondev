@@ -10,11 +10,13 @@ TRIGGER = ':bdfl:'
 USER_REGEX = re.compile('<@U.{8}>')
 TRIGGER_REGEX = re.compile(TRIGGER)
 
+
 async def add_candy_message(message, slack, facades, *_):
     candy = facades.get('candy')
     db = facades.get('database')
     users_raw = USER_REGEX.findall(message.incoming.text)
-    users = [user[2:-1] for user in users_raw if user[2:-1] != message.incoming.frm.id]
+    users = [user[2:-1] for user in users_raw if
+             user[2:-1] != message.incoming.frm.id]
 
     if not users:
         return
@@ -23,7 +25,7 @@ async def add_candy_message(message, slack, facades, *_):
 
     receivers_messages = list()
     for user in users:
-        slack_user = await slack.users.get(user, db=db, update=True, dm=True)
+        slack_user = await slack.users.get(user, update=True, dm=True)
         user_count = await candy.add(user, count, db=db)
         msg = message.clone()
         msg.to = slack_user
@@ -37,8 +39,9 @@ async def add_candy_message(message, slack, facades, *_):
 
     message.to = message.incoming.frm
     message.text = 'You gave {count} {trigger} to <@{user}>'.format(count=count,
-                                                                 trigger=TRIGGER,
-                                                                 user=', '.join(users))
+                                                                    trigger=TRIGGER,
+                                                                    user=', '.join(
+                                                                        users))
     await slack.send(message)
     for msg in receivers_messages:
         await slack.send(msg)
@@ -52,10 +55,13 @@ async def add_candy_reaction(event, slack, facades):
 
         user_count = await candy.add(event['item_user'], db=db)
 
-        message_from = SlackMessage(to=(await slack.users.get(event['user'], dm=True, db=db)))
-        message_from.text = 'You gave 1 {trigger} to <@{user}>'.format(trigger=TRIGGER, user=event['item_user'])
+        message_from = SlackMessage(
+            to=(await slack.users.get(event['user'], dm=True)))
+        message_from.text = 'You gave 1 {trigger} to <@{user}>'.format(
+            trigger=TRIGGER, user=event['item_user'])
 
-        message_to = SlackMessage(to=(await slack.users.get(event['item_user'], dm=True, db=db)))
+        message_to = SlackMessage(
+            to=(await slack.users.get(event['item_user'], dm=True)))
         message_to.text = '<@{sender}> gave you 1 {trigger}. You now have {user_count} {trigger}'.format(
             sender=event['user'],
             trigger=TRIGGER,
@@ -79,8 +85,9 @@ async def leaderboard(message, slack, facades, *_):
     att.data['text'] = ''
 
     for user in data:
-        slack_user = await slack.users.get(user['user'], db=db, update=True)
-        att.data['text'] += '{} *{}*\n'.format(slack_user.slack_data['name'], user['candy'])
+        slack_user = await slack.users.get(user['user'], update=True)
+        att.data['text'] += '{} *{}*\n'.format(slack_user.slack_data['name'],
+                                               user['candy'])
 
     message.attachments.append(att)
     await slack.send(message)

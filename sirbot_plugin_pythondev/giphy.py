@@ -1,10 +1,5 @@
-import os
-import aiohttp
 import logging
-import random
 import re
-import asyncio
-import functools
 
 from sirbot_plugin_slack.hookimpl import hookimpl
 
@@ -18,17 +13,20 @@ async def gif_search(message, slack, facades, *_):
     message.text = url
     await slack.send(message)
 
+
 async def gif_trending(message, slack, facades, *_):
     giphy = facades.get('giphy')
     url = await giphy.trending()
     message.text = url
     await slack.send(message)
 
+
 async def gif_random(message, slack, facades, *_):
     giphy = facades.get('giphy')
     url = await giphy.random()
     message.text = url
     await slack.send(message)
+
 
 async def gif_by_id(message, slack, facades, *_):
     giphy = facades.get('giphy')
@@ -43,7 +41,6 @@ async def gif_by_id(message, slack, facades, *_):
 
 @hookimpl
 def register_slack_messages():
-
     commands = [
         {
             'match': '^gif search ',
