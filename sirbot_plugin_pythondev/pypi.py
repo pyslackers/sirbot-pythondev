@@ -8,7 +8,8 @@ logger = logging.getLogger('sirbot.pythondev')
 
 
 async def pypi_search(message, slack, facades, *_):
-    search = message.incoming.text[11:].strip()
+    response = message.response()
+    search = message.text[11:].strip()
     pypi = facades.get('pypi')
     results = await pypi.pypi_search(search)
 
@@ -20,7 +21,7 @@ async def pypi_search(message, slack, facades, *_):
                 text=result['summary'],
                 title_link='{}/{}'.format(pypi.ROOT_URL, result['name'])
             )
-            message.content.attachments.append(att)
+            response.attachments.append(att)
 
         if len(results) > 3:
             path = pypi.SEARCH_PATH.format(search)
@@ -29,14 +30,14 @@ async def pypi_search(message, slack, facades, *_):
                 fallback='{0} more result(s)..'.format(len(results) - 3),
                 title_link='{}/{}'.format(pypi.ROOT_URL, path)
             )
-            message.content.attachments.append(more_info)
+            response.attachments.append(more_info)
 
-        message.text = "Searched PyPi for '{0}'".format(search)
+        response.text = "Searched PyPi for '{0}'".format(search)
     else:
-        message.text = "Could not find anything on PyPi matching '{0}'".format(
-            search)
+        response.text = "Could not find anything on PyPi matching" \
+                        " '{0}'".format(search)
 
-    await slack.send(message)
+    await slack.send(response)
 
 
 @hookimpl

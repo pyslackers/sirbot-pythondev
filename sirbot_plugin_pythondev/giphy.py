@@ -7,36 +7,40 @@ logger = logging.getLogger('sirbot.pythondev')
 
 
 async def gif_search(message, slack, facades, *_):
+    response = message.response()
     giphy = facades.get('giphy')
-    search = message.incoming.text[10:].strip().split(' ')
+    search = message.text[10:].strip().split(' ')
     url = await giphy.search(search)
-    message.text = url
-    await slack.send(message)
+    response.text = url
+    await slack.send(response)
 
 
 async def gif_trending(message, slack, facades, *_):
+    response = message.response()
     giphy = facades.get('giphy')
     url = await giphy.trending()
-    message.text = url
-    await slack.send(message)
+    response.text = url
+    await slack.send(response)
 
 
 async def gif_random(message, slack, facades, *_):
+    response = message.response()
     giphy = facades.get('giphy')
     url = await giphy.random()
-    message.text = url
-    await slack.send(message)
+    response.text = url
+    await slack.send(response)
 
 
 async def gif_by_id(message, slack, facades, *_):
+    response = message.response()
     giphy = facades.get('giphy')
-    id_ = message.incoming.text[3:].strip()
+    id_ = message.text[3:].strip()
     try:
         url = await giphy.by_id(id_)
-        message.text = url
+        response.text = url
     except ConnectionError:
-        message.text = '''I'm sorry I could not find this gif'''
-    await slack.send(message)
+        response.text = '''I'm sorry I could not find this gif'''
+    await slack.send(response)
 
 
 @hookimpl
