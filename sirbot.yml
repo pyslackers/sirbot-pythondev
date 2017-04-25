@@ -9,6 +9,7 @@ core:
 sirbot_plugin_slack:
   save: 
     message: true
+    commands: true
   priority: 20
   plugins:
   - sirbot_plugin_pythondev
@@ -41,14 +42,7 @@ logging:
   loggers:
     sirbot:
       level: DEBUG
-      handlers: [file]
+      handlers: [file, console]
       propagate: no
-    sirbot.core:
-      level: DEBUG
-      handlers: [console]
-    sirbot.slack:
-      level: DEBUG
-      handlers: [console]
     sirbot.sqlite:
       level: WARNING
-      handlers: [console]
