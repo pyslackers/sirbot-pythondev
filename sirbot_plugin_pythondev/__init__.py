@@ -176,10 +176,10 @@ async def choose_file(action, slack, facade):
 
     if value == 'intro_doc':
         response.replace_original = False
-        response.text = 'intro doc'
+        response.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'
     elif value == 'what_to_do_doc':
         response.replace_original = False
-        response.text = 'what to do'
+        response.text = 'https://pythondev.slack.com/files/ndevox/F4A137J0J/What_to_do_next_on_your_Python_journey'
     else:
         response.text = '''Sorry we could not find this file'''
 
