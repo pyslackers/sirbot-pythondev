@@ -137,12 +137,10 @@ async def file(command, slack, facades):
     response = command.response()
     if command.text == 'intro':
         response.response_type = 'in_channel'
-        # response.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'
-        response.text = 'intro doc'
+        response.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'
     elif command.text == 'what to do':
         response.response_type = 'in_channel'
-        # response.text = 'https://pythondev.slack.com/files/ndevox/F4A137J0J/What_to_do_next_on_your_Python_journey'
-        response.text = 'what to do'
+        response.text = 'https://pythondev.slack.com/files/ndevox/F4A137J0J/What_to_do_next_on_your_Python_journey'
     else:
         att = Attachment(
             title='Choose a file to show',
