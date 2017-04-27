@@ -12,8 +12,6 @@ TRIGGER_REGEX = re.compile(TRIGGER)
 
 
 async def add_candy_message(message, slack, facades, *_):
-    candy = facades.get('candy')
-    db = facades.get('database')
     users_raw = USER_REGEX.findall(message.text)
     users = [user[2:-1] for user in users_raw if
              user[2:-1] != message.frm.id]
@@ -21,13 +19,14 @@ async def add_candy_message(message, slack, facades, *_):
     if not users:
         return
 
+    candy = facades.get('candy')
     response = message.response()
     count = len(TRIGGER_REGEX.findall(message.text))
 
     receivers_messages = list()
     for user in users:
         slack_user = await slack.users.get(user, dm=True)
-        user_count = await candy.add(user, count, db=db)
+        user_count = await candy.add(user, count)
         msg = response.clone()
         msg.to = slack_user
         msg.text = '<@{sender}> gave you {count} {trigger}.' \
@@ -54,9 +53,7 @@ async def add_candy_message(message, slack, facades, *_):
 async def add_candy_reaction(event, slack, facades):
     if event['reaction'] == 'bdfl' and event['user'] != event['item_user']:
         candy = facades.get('candy')
-        db = facades.get('database')
-
-        user_count = await candy.add(event['item_user'], db=db)
+        user_count = await candy.add(event['item_user'])
 
         message_from = SlackMessage(
             to=(await slack.users.get(event['user'], dm=True)))
@@ -73,18 +70,16 @@ async def add_candy_reaction(event, slack, facades):
                             )
         await slack.send(message_from)
         await slack.send(message_to)
-        await db.commit()
 
     else:
         return
 
 
-async def leaderboard(message, slack, facades, *_):
-    response = message.response()
+async def leaderboard(command, slack, facades):
+    response = command.response()
 
     candy = facades.get('candy')
-    db = facades.get('database')
-    data = await candy.top(count=10, db=db)
+    data = await candy.top(count=10)
     att = Attachment(
         title='{} Leaderboard'.format(TRIGGER),
         fallback='{} Leaderboard'.format(TRIGGER),
@@ -94,6 +89,7 @@ async def leaderboard(message, slack, facades, *_):
     if not data:
         response.text = 'No data to display'
     else:
+        response.response_type = 'in_channel'
         for user in data:
             slack_user = await slack.users.get(user['user'])
             att.text += '{} *{}*\n'.format(slack_user.name, user['candy'])
@@ -110,11 +106,18 @@ def register_slack_messages():
             'match': TRIGGER,
             'func': add_candy_message,
         },
+    ]
+
+    return commands
+
+
+@hookimpl
+def register_slack_commands():
+    commands = [
         {
-            'match': 'leaderboard',
+            'command': '/leaderboard',
             'func': leaderboard,
-            'mention': True,
-            'flags': re.IGNORECASE
+            'public': False
         }
     ]
 
@@ -125,7 +128,7 @@ def register_slack_messages():
 def register_slack_events():
     events = [
         {
-            'name': 'reaction_added',
+            'event': 'reaction_added',
             'func': add_candy_reaction
         },
     ]

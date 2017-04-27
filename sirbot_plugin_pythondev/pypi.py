@@ -7,11 +7,17 @@ from sirbot_plugin_slack.message import Attachment
 logger = logging.getLogger('sirbot.pythondev')
 
 
-async def pypi_search(message, slack, facades, *_):
-    response = message.response()
-    search = message.text[11:].strip()
+async def pypi_search(command, slack, facades):
+    response = command.response()
     pypi = facades.get('pypi')
-    results = await pypi.pypi_search(search)
+    results = await pypi.search(command.text)
+
+    logger.debug("aa%saa", command.text)
+
+    if not command.text:
+        response.text = 'Please enter the package name you wish to find'
+        await slack.send(response)
+        return
 
     if results:
         for result in results[:3]:
@@ -24,7 +30,7 @@ async def pypi_search(message, slack, facades, *_):
             response.attachments.append(att)
 
         if len(results) > 3:
-            path = pypi.SEARCH_PATH.format(search)
+            path = pypi.SEARCH_PATH.format(command.text)
             more_info = Attachment(
                 title='{0} more result(s)..'.format(len(results) - 3),
                 fallback='{0} more result(s)..'.format(len(results) - 3),
@@ -32,23 +38,24 @@ async def pypi_search(message, slack, facades, *_):
             )
             response.attachments.append(more_info)
 
-        response.text = "Searched PyPi for '{0}'".format(search)
+        response.response_type = 'in_channel'
+        response.text = "<@{}> Searched PyPi for `{}`".format(command.user.id,
+                                                              command.text)
     else:
         response.text = "Could not find anything on PyPi matching" \
-                        " '{0}'".format(search)
+                        " `{0}`".format(command.text)
 
     await slack.send(response)
 
 
 @hookimpl
-def register_slack_messages():
+def register_slack_commands():
     commands = [
         {
-            'match': '^pypi search ',
+            'command': '/pypi',
             'func': pypi_search,
-            'mention': True,
-            'flags': re.IGNORECASE
-        },
+            'public': False
+        }
     ]
 
     return commands
