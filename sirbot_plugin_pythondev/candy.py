@@ -47,7 +47,6 @@ async def add_candy_message(message, slack, facades, *_):
     await slack.send(response)
     for msg in receivers_messages:
         await slack.send(msg)
-    await db.commit()
 
 
 async def add_candy_reaction(event, slack, facades):

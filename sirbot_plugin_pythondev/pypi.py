@@ -1,5 +1,4 @@
 import logging
-import re
 
 from sirbot_plugin_slack.hookimpl import hookimpl
 from sirbot_plugin_slack.message import Attachment

@@ -1,5 +1,4 @@
 import logging
-import re
 import json
 
 from sirbot_plugin_slack.hookimpl import hookimpl
@@ -11,22 +10,34 @@ logger = logging.getLogger('sirbot.pythondev')
 async def gif_search(command, slack, facades):
     response = command.response()
     giphy = facades.get('giphy')
-    urls = await giphy.search(command.text)
 
-    att = Attachment(
-        title='Giphy search: `{}`'.format(command.text),
-        fallback='Giphy search: `{}`'.format(command.text),
-        image_url=urls[0],
-        callback_id='gif_search'
-    )
+    if command.text:
+        urls = await giphy.search(command.text)
 
-    data = json.dumps({'urls': urls, 'search': command.text, 'index': 0})
-    ok = Button(name='ok', text='Send', style='primary', value=data)
-    again = Button(name='again', text='Search again', value=data)
+        att = Attachment(
+            title='You searched for `{}`'.format(command.text),
+            fallback='You searched for `{}`'.format(command.text),
+            image_url=urls[0],
+            callback_id='gif_search'
+        )
 
-    att.actions = [ok, again]
-    response.attachments.append(att)
-    await slack.send(response)
+        data = json.dumps({'urls': urls, 'search': command.text, 'index': 0})
+        ok = Button(name='ok', text='Send', style='primary', value=data)
+        next_ = Button(name='next', text='Next', value=data)
+
+        att.actions = [ok, next_]
+        response.attachments.append(att)
+        await slack.send(response)
+    else:
+        url = giphy.trending()
+
+        att = Attachment(
+            title='Trending gif on giphy',
+            fallback='Trending gif on giphy',
+            image_url=url,
+        )
+        response.attachments.append(att)
+        await slack.send(response)
 
 
 async def gif_search_action(action, slack, facades):
@@ -34,8 +45,10 @@ async def gif_search_action(action, slack, facades):
     data = json.loads(action.action['value'])
 
     if action.action['name'] == 'ok':
-        title = '<@{}> Searched giphy for: `{}`'.format(action.user.id,
-                                                        data['search'])
+        title = '<@{}> Searched giphy for: `{}`'.format(
+            action.user.id,
+            data['search']
+        )
 
         att = Attachment(
             title=title,
@@ -51,17 +64,14 @@ async def gif_search_action(action, slack, facades):
         confirm.text = 'Gif successfully sent'
         await slack.send(confirm)
 
-    elif action.action['name'] == 'again':
+    elif action.action['name'] in ('next', 'previous'):
 
-        index = data['index'] + 1
-        urls = data['urls']
+        if action.action['name'] == 'next':
+            index = data['index'] + 1
+        else:
+            index = data['index'] - 1
 
-        try:
-            url = urls[index]
-        except IndexError:
-            response.text = 'No more result to display'
-            await slack.send(response)
-            return
+        url = data['urls'][index]
 
         att = Attachment(
             title='Giphy search: `{}`'.format(data['search']),
@@ -70,76 +80,29 @@ async def gif_search_action(action, slack, facades):
             callback_id='gif_search'
         )
 
-        data = json.dumps({'urls': urls,
-                           'search': data['search'],
-                           'index': index})
-        ok = Button(name='ok', text='Send', style='primary', value=data)
-        again = Button(name='again', text='Search again', value=data)
+        data['index'] = index
+        data_json = json.dumps(data)
 
-        att.actions = [ok, again]
+        ok = Button(name='ok', text='Send', style='primary', value=data_json)
+        att.actions.append(ok)
+
+        if index != 0:
+            previous = Button(
+                name='previous',
+                text='Previous',
+                value=data_json
+            )
+            att.actions.append(previous)
+
+        if len(data['urls']) > index + 1:
+            next_ = Button(name='next', text='Next', value=data_json)
+            att.actions.append(next_)
+
         response.attachments.append(att)
         await slack.send(response)
+
     else:
         return
-
-# async def gif_trending(message, slack, facades, *_):
-#     response = message.response()
-#     giphy = facades.get('giphy')
-#     url = await giphy.trending()
-#     response.text = url
-#     await slack.send(response)
-#
-#
-# async def gif_random(message, slack, facades, *_):
-#     response = message.response()
-#     giphy = facades.get('giphy')
-#     url = await giphy.random()
-#     response.text = url
-#     await slack.send(response)
-#
-#
-# async def gif_by_id(message, slack, facades, *_):
-#     response = message.response()
-#     giphy = facades.get('giphy')
-#     id_ = message.text[3:].strip()
-#     try:
-#         url = await giphy.by_id(id_)
-#         response.text = url
-#     except ConnectionError:
-#         response.text = '''I'm sorry I could not find this gif'''
-#     await slack.send(response)
-
-
-# @hookimpl
-# def register_slack_messages():
-#     commands = [
-#         {
-#             'match': '^gif search ',
-#             'func': gif_search,
-#             'mention': True,
-#             'flags': re.IGNORECASE
-#         },
-#         {
-#             'match': '^gif$',
-#             'func': gif_random,
-#             'mention': True,
-#             'flags': re.IGNORECASE
-#         },
-#         {
-#             'match': '^gif trending$',
-#             'func': gif_trending,
-#             'mention': True,
-#             'flags': re.IGNORECASE
-#         },
-#         {
-#             'match': '^gif (?!search)(?!trending).*',
-#             'func': gif_by_id,
-#             'mention': True,
-#             'flags': re.IGNORECASE
-#         }
-#     ]
-#
-#     return commands
 
 
 @hookimpl
