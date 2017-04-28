@@ -4,7 +4,7 @@ import re
 from sirbot_plugin_slack.hookimpl import hookimpl
 from sirbot_plugin_slack.message import Attachment, SlackMessage
 
-logger = logging.getLogger('sirbot.candy')
+logger = logging.getLogger('sirbot.pythondev')
 
 TRIGGER = ':bdfl:'
 USER_REGEX = re.compile('<@U.{8}>')

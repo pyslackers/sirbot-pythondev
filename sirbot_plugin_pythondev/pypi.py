@@ -25,7 +25,7 @@ async def pypi_search(command, slack, facades):
                 title_link='{}/{}'.format(pypi.ROOT_URL, result['name'])
             )
             response.attachments.append(att)
-            
+
         if len(results) == 4:
             att = Attachment(
                 title=results[3]['name'],
