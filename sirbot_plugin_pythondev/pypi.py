@@ -11,8 +11,6 @@ async def pypi_search(command, slack, facades):
     pypi = facades.get('pypi')
     results = await pypi.search(command.text)
 
-    logger.debug("aa%saa", command.text)
-
     if not command.text:
         response.text = 'Please enter the package name you wish to find'
         await slack.send(response)
@@ -27,12 +25,21 @@ async def pypi_search(command, slack, facades):
                 title_link='{}/{}'.format(pypi.ROOT_URL, result['name'])
             )
             response.attachments.append(att)
+            
+        if len(results) == 4:
+            att = Attachment(
+                title=results[3]['name'],
+                fallback=results[3]['name'],
+                text=results[3]['summary'],
+                title_link='{}/{}'.format(pypi.ROOT_URL, results[3]['name'])
+            )
+            response.attachments.append(att)
 
-        if len(results) > 3:
+        elif len(results) > 3:
             path = pypi.SEARCH_PATH.format(command.text)
             more_info = Attachment(
-                title='{0} more result(s)..'.format(len(results) - 3),
-                fallback='{0} more result(s)..'.format(len(results) - 3),
+                title='{0} more results..'.format(len(results) - 3),
+                fallback='{0} more results..'.format(len(results) - 3),
                 title_link='{}/{}'.format(pypi.ROOT_URL, path)
             )
             response.attachments.append(more_info)
