@@ -16,6 +16,7 @@ sirbot_plugin_slack:
   - sirbot_plugin_pythondev.giphy
   - sirbot_plugin_pythondev.pypi
   - sirbot_plugin_pythondev.candy
+  - sirbot_plugin_pythondev.files
 
 database:
   priority: 80
