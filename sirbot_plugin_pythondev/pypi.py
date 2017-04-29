@@ -45,7 +45,7 @@ async def pypi_search(command, slack, facades):
             response.attachments.append(more_info)
 
         response.response_type = 'in_channel'
-        response.text = "<@{}> Searched PyPi for `{}`".format(command.user.id,
+        response.text = "<@{}> Searched PyPi for `{}`".format(command.frm.id,
                                                               command.text)
     else:
         response.text = "Could not find anything on PyPi matching" \
