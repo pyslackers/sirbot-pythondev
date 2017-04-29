@@ -46,7 +46,7 @@ async def gif_search_action(action, slack, facades):
 
     if action.action['name'] == 'ok':
         title = '<@{}> Searched giphy for: `{}`'.format(
-            action.user.id,
+            action.frm.id,
             data['search']
         )
 
