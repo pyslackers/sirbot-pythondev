@@ -6,7 +6,7 @@ core:
     - sirbot_plugin.sqlite
     - sirbot_plugin.candy
 
-sirbot_plugin_slack:
+slack:
   save:
     message: true
   priority: 20
