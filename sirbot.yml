@@ -11,7 +11,7 @@ slack:
   priority: 20
   save:
     messages: true
-    events: true
+    events: false
     commands: true
     actions: true
   plugins:
