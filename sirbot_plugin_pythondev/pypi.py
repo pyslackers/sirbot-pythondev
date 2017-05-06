@@ -1,7 +1,7 @@
 import logging
 
-from sirbot_plugin_slack.hookimpl import hookimpl
-from sirbot_plugin_slack.message import Attachment
+from sirbot.slack.hookimpl import hookimpl
+from sirbot.slack.message import Attachment
 
 logger = logging.getLogger('sirbot.pythondev')
 

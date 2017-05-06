@@ -1,11 +1,11 @@
 sirbot:
   port: 8080
   plugins:
-    - sirbot_plugin.sqlite
-    - sirbot_plugin.giphy
-    - sirbot_plugin.pypi
-    - sirbot_plugin.candy
-    - sirbot_plugin_slack
+    - sirbot.plugins.sqlite
+    - sirbot.plugins.giphy
+    - sirbot.plugins.pypi
+    - sirbot.plugins.candy
+    - sirbot.slack
 
 slack:
   priority: 20
