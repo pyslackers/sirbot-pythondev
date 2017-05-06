@@ -20,10 +20,6 @@ def load_package_meta():
 
 PKG_META = load_package_meta()
 
-requirements = [
-    # TODO: put package requirements here
-]
-
 
 def parse_reqs(req_path='./requirements.txt'):
     """Recursively parse requirements from nested pip files."""
@@ -82,7 +78,7 @@ setup(
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     include_package_data=True,
-    install_requires=parse_reqs(),
+    install_requires=parse_reqs('./requirements/requirements.txt'),
     zip_safe=False,
     tests_require=[
         'pytest',
