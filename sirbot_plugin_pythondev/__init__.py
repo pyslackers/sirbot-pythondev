@@ -2,8 +2,8 @@ import asyncio
 import logging
 import re
 
-from sirbot_plugin_slack.hookimpl import hookimpl
-from sirbot_plugin_slack.message import Attachment, Field, SlackMessage
+from sirbot.slack.hookimpl import hookimpl
+from sirbot.slack.message import Attachment, Field, SlackMessage
 
 logger = logging.getLogger('sirbot.pythondev')
 
