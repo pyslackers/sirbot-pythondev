@@ -29,13 +29,11 @@ async def add_candy_message(message, slack, facades, *_):
         user_count = await candy.add(user, count)
         msg = response.clone()
         msg.to = slack_user
-        msg.text = '<@{sender}> gave you {count} {trigger}.' \
-                   ' You now have {user_count} {trigger}'.format(
-                        sender=message.frm.id,
-                        count=count,
-                        trigger=TRIGGER,
-                        user_count=user_count
-                    )
+        msg.text = '<@{sender}> gave you {count} {trigger}. You now have ' \
+                   '{user_count} {trigger}'.format(sender=message.frm.id,
+                                                   count=count,
+                                                   trigger=TRIGGER,
+                                                   user_count=user_count)
         receivers_messages.append(msg)
 
     response.to = message.frm
@@ -61,12 +59,11 @@ async def add_candy_reaction(event, slack, facades):
 
         message_to = SlackMessage(
             to=(await slack.users.get(event['item_user'], dm=True)))
-        message_to.text = '<@{sender}> gave you 1 {trigger}.' \
-                          ' You now have {user_count} {trigger}'.format(
-                                sender=event['user'],
-                                trigger=TRIGGER,
-                                user_count=user_count
-                            )
+        message_to.text = '<@{sender}> gave you 1 {trigger}. ' \
+                          'You now have {user_count} ' \
+                          '{trigger}'.format(sender=event['user'],
+                                             trigger=TRIGGER,
+                                             user_count=user_count)
         await slack.send(message_from)
         await slack.send(message_to)
 

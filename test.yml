@@ -1,21 +1,46 @@
-core:
+sirbot:
+  port: 8080
   plugins:
-    - sirbot_plugin_slack
+    - sirbot_plugin.sqlite
     - sirbot_plugin.giphy
     - sirbot_plugin.pypi
-    - sirbot_plugin.sqlite
     - sirbot_plugin.candy
+    - sirbot_plugin_slack
 
 slack:
-  save:
-    message: true
   priority: 20
+  save:
+    messages: true
+    events: false
+    commands: true
+    actions: true
   plugins:
-  - sirbot_plugin_pythondev
-  - sirbot_plugin_pythondev.giphy
-  - sirbot_plugin_pythondev.pypi
-  - sirbot_plugin_pythondev.candy
+    - sirbot_plugin_pythondev
+    - sirbot_plugin_pythondev.giphy
+    - sirbot_plugin_pythondev.pypi
+    - sirbot_plugin_pythondev.candy
+    - sirbot_plugin_pythondev.files
 
-database:
-  file: sirbot.db
+sqlite:
   priority: 80
+  file: ':memory:'
+
+logging:
+  version: 1
+  formatters:
+    simple:
+      format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  handlers:
+    console:
+      class: logging.StreamHandler
+      level: DEBUG
+      formatter: simple
+      stream: ext://sys.stdout
+  loggers:
+    sirbot:
+      level: DEBUG
+      handlers:
+        - console
+      propagate: no
+    sirbot.sqlite:
+      level: WARNING
