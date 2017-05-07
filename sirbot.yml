@@ -14,6 +14,9 @@ slack:
     events: false
     commands: true
     actions: true
+  endpoints:
+    commands: "/commands"
+    actions: "/buttons"
   plugins:
     - sirbot_plugin_pythondev
     - sirbot_plugin_pythondev.giphy
