@@ -57,5 +57,5 @@ logging:
       level: DEBUG
       handlers: [file, console]
       propagate: no
-    sirbot.sqlite:
+    sirbot.plugins.sqlite:
       level: WARNING
