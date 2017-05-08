@@ -6,6 +6,12 @@ sirbot:
     - sirbot.plugins.pypi
     - sirbot.plugins.candy
     - sirbot.slack
+    - sirbot.plugins.github
+
+github:
+  endpoint: "/github"
+  plugins:
+    - sirbot_plugin_pythondev.github
 
 slack:
   priority: 20
