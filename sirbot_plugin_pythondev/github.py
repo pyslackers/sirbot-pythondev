@@ -10,9 +10,9 @@ async def issues(event, facades):
     att = None
 
     if event['action'] == 'opened':
-        att = await issue_format(event, 'good')
+        att = issue_format(event, 'good')
     elif event['action'] == 'closed':
-        att = await issue_format(event, 'danger')
+        att = issue_format(event, 'danger')
 
     if att:
         slack = facades.get('slack')
@@ -22,11 +22,7 @@ async def issues(event, facades):
         await slack.send(msg)
 
 
-async def issue_format(event, color):
-
-    body = event['issue']['body']
-    if len(body) > 50:
-        body = body[:50]
+def issue_format(event, color):
 
     att = Attachment(
         fallback='issue {}'.format(event['action']),
@@ -36,7 +32,7 @@ async def issue_format(event, color):
             action=event['action']
         ),
         color=color,
-        text=body,
+        text=event['issue']['body'],
         title=event['issue']['title'],
         title_link=event['issue']['html_url'],
         author_icon=event['sender']['avatar_url'],
@@ -52,9 +48,15 @@ async def pull_request(event, facades):
     att = None
 
     if event['action'] == 'opened':
-        att = await pull_request_format(event, 'good')
+        data = {'color': 'good', 'action': 'opened'}
+        att = pull_request_format(event, data)
     elif event['action'] == 'closed':
-        att = await pull_request_format(event, 'danger')
+        if event['merged']:
+            data = {'color': '#6f42c1', 'action': 'merged'}
+        else:
+            data = {'color': 'danger', 'action': 'closed'}
+
+        att = pull_request_format(event, data)
 
     if att:
         slack = facades.get('slack')
@@ -64,11 +66,7 @@ async def pull_request(event, facades):
         await slack.send(msg)
 
 
-async def pull_request_format(event, color):
-
-    body = event['pull_request']['body']
-    if len(body) > 50:
-        body = body[:50]
+def pull_request_format(event, data):
 
     footer = '+ {add} / - {del_}'.format(
         add=event['pull_request']['additions'],
@@ -76,14 +74,14 @@ async def pull_request_format(event, color):
     )
 
     att = Attachment(
-        fallback='pull request {}'.format(event['action']),
+        fallback='pull request {}'.format(data['action']),
         pretext='Pull request {action} in <{url}|{name}>'.format(
             url=event['repository']['html_url'],
             name=event['repository']['name'],
-            action=event['action']
+            action=data['action']
         ),
-        color=color,
-        text=body,
+        color=data['color'],
+        text=event['pull_request']['body'],
         title=event['pull_request']['title'],
         title_link=event['pull_request']['html_url'],
         author_icon=event['sender']['avatar_url'],
