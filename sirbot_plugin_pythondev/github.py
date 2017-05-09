@@ -51,7 +51,7 @@ async def pull_request(event, facades):
         data = {'color': 'good', 'action': 'opened'}
         att = pull_request_format(event, data)
     elif event['action'] == 'closed':
-        if event['merged']:
+        if event['pull_request']['merged']:
             data = {'color': '#6f42c1', 'action': 'merged'}
         else:
             data = {'color': 'danger', 'action': 'closed'}
