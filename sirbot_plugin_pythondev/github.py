@@ -16,7 +16,7 @@ async def issues(event, facades):
 
     if att:
         slack = facades.get('slack')
-        channel = await slack.channels.get(name='community-projects')
+        channel = await slack.channels.get(name='community_projects')
         msg = SlackMessage(to=channel)
         msg.attachments.append(att)
         await slack.send(msg)
@@ -33,7 +33,12 @@ def issue_format(event, color):
         ),
         color=color,
         text=event['issue']['body'],
-        title=event['issue']['title'],
+        title='Issue {action} in <{url}|{name}>: {title}'.format(
+                url=event['repository']['html_url'],
+                name=event['repository']['name'],
+                action=event['action'],
+                title=event['issue']['title']
+        ),
         title_link=event['issue']['html_url'],
         author_icon=event['sender']['avatar_url'],
         author_name=event['sender']['login'],
@@ -60,7 +65,7 @@ async def pull_request(event, facades):
 
     if att:
         slack = facades.get('slack')
-        channel = await slack.channels.get(name='community-projects')
+        channel = await slack.channels.get(name='community_projects')
         msg = SlackMessage(to=channel)
         msg.attachments.append(att)
         await slack.send(msg)
@@ -75,14 +80,14 @@ def pull_request_format(event, data):
 
     att = Attachment(
         fallback='pull request {}'.format(data['action']),
-        pretext='Pull request {action} in <{url}|{name}>'.format(
+        title='Pull request {action} in <{url}|{name}>: {title}'.format(
             url=event['repository']['html_url'],
             name=event['repository']['name'],
-            action=data['action']
+            action=data['action'],
+            title=event['pull_request']['title'],
         ),
         color=data['color'],
         text=event['pull_request']['body'],
-        title=event['pull_request']['title'],
         title_link=event['pull_request']['html_url'],
         author_icon=event['sender']['avatar_url'],
         author_name=event['sender']['login'],
