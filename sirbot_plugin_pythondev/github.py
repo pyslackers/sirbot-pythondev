@@ -23,23 +23,17 @@ async def issues(event, facades):
 
 
 def issue_format(event, color):
-
     att = Attachment(
         fallback='issue {}'.format(event['action']),
-        pretext='Issue {action} in <{url}|{name}>'.format(
-            url=event['repository']['html_url'],
-            name=event['repository']['name'],
-            action=event['action']
-        ),
         color=color,
         text=event['issue']['body'],
-        title='Issue {action} in <{url}|{name}>: {title}'.format(
-                url=event['repository']['html_url'],
-                name=event['repository']['name'],
-                action=event['action'],
-                title=event['issue']['title']
+        title='Issue {action} in <{repo_url}|{name}>: <{url}|{title}>'.format(
+            repo_url=event['repository']['html_url'],
+            url=event['issue']['html_url'],
+            name=event['repository']['name'],
+            action=event['action'],
+            title=event['issue']['title']
         ),
-        title_link=event['issue']['html_url'],
         author_icon=event['sender']['avatar_url'],
         author_name=event['sender']['login'],
         author_link=event['sender']['html_url'],
@@ -72,7 +66,6 @@ async def pull_request(event, facades):
 
 
 def pull_request_format(event, data):
-
     footer = '+ {add} / - {del_}'.format(
         add=event['pull_request']['additions'],
         del_=event['pull_request']['deletions']
@@ -80,15 +73,16 @@ def pull_request_format(event, data):
 
     att = Attachment(
         fallback='pull request {}'.format(data['action']),
-        title='Pull request {action} in <{url}|{name}>: {title}'.format(
-            url=event['repository']['html_url'],
+        title='Pull request {action} in <{repo_url}|{name}>:'
+              ' <{url}|{title}>'.format(
+            repo_url=event['repository']['html_url'],
+            url=event['pull_request']['html_url'],
             name=event['repository']['name'],
             action=data['action'],
             title=event['pull_request']['title'],
         ),
         color=data['color'],
         text=event['pull_request']['body'],
-        title_link=event['pull_request']['html_url'],
         author_icon=event['sender']['avatar_url'],
         author_name=event['sender']['login'],
         author_link=event['sender']['html_url'],
@@ -100,7 +94,6 @@ def pull_request_format(event, data):
 
 @hookimpl
 def register_github_events():
-
     events = [
         {
             'event': 'issues',
