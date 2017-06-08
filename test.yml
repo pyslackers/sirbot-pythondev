@@ -16,10 +16,13 @@ slack:
     actions: true
   plugins:
     - sirbot_plugin_pythondev
-    - sirbot_plugin_pythondev.giphy
-    - sirbot_plugin_pythondev.pypi
+    - sirbot_plugin_pythondev.admin
     - sirbot_plugin_pythondev.candy
     - sirbot_plugin_pythondev.files
+    - sirbot_plugin_pythondev.giphy
+    - sirbot_plugin_pythondev.intro
+    - sirbot_plugin_pythondev.pypi
+    - sirbot_plugin_pythondev.test
 
 sqlite:
   priority: 80
