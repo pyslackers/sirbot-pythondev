@@ -1,9 +1,13 @@
 import logging
 
-from sirbot.plugins.github.hookimpl import hookimpl
 from sirbot.slack.message import SlackMessage, Attachment
 
-logger = logging.getLogger('sirbot.pythondev')
+logger = logging.getLogger(__name__)
+
+
+def add_to_github(github):
+    github.add_event('issues', issues)
+    github.add_event('pull_request', pull_request)
 
 
 async def issues(event, facades):
@@ -90,20 +94,3 @@ def pull_request_format(event, data):
     )
 
     return att
-
-
-@hookimpl
-def register_github_events():
-    events = [
-        {
-            'event': 'issues',
-            'func': issues
-        },
-        {
-            'event': 'pull_request',
-            'func': pull_request
-        }
-
-    ]
-
-    return events

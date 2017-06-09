@@ -1,10 +1,16 @@
 import re
-import logging
 
-from sirbot.slack.hookimpl import hookimpl
 from sirbot.slack.message import Attachment, Select
 
-logger = logging.getLogger('sirbot.pythondev')
+
+def add_to_slack(slack):
+    slack.add_message('intro doc',
+                      intro_doc, mention=True, flags=re.IGNORECASE)
+    slack.add_message('what to do',
+                      what_to_do, mention=True, flags=re.IGNORECASE)
+
+    slack.add_action('choose_file', choose_file, public=False)
+    slack.add_command('/file', file, public=False)
 
 
 async def file(command, slack, *_):
@@ -71,50 +77,3 @@ async def what_to_do(message, slack, *_):
     response = message.response()
     response.text = 'https://pythondev.slack.com/files/ndevox/F4A137J0J/What_to_do_next_on_your_Python_journey'  # noqa
     await slack.send(response)
-
-
-@hookimpl
-def register_slack_commands():
-    commands = [
-        {
-            'command': '/file',
-            'func': file,
-            'public': False
-        }
-    ]
-
-    return commands
-
-
-@hookimpl
-def register_slack_actions():
-    commands = [
-        {
-            'callback_id': 'choose_file',
-            'func': choose_file,
-            'public': False
-        }
-    ]
-
-    return commands
-
-
-@hookimpl
-def register_slack_messages():
-    commands = [
-
-        {
-            'match': 'intro doc',
-            'func': intro_doc,
-            'mention': True,
-            'flags': re.IGNORECASE
-        },
-        {
-            'match': 'what to do',
-            'func': what_to_do,
-            'mention': True,
-            'flags': re.IGNORECASE
-        },
-    ]
-
-    return commands

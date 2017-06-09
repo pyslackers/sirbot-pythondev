@@ -1,10 +1,27 @@
-import logging
 import re
 
-from sirbot.slack.hookimpl import hookimpl
 from sirbot.slack.message import Attachment, Field
 
-logger = logging.getLogger('sirbot.pythondev')
+from . import candy, giphy, intro, pypi, files
+
+
+def add_to_slack(slack):
+    slack.add_message('^help', help_, flags=re.IGNORECASE, mention=True)
+    slack.add_message('tell (<(#|@)(?P<to_id>[A-Z0-9]*)(|.*)?>) (?P<item>.*)',
+                      publish, flags=re.IGNORECASE, mention=True, admin=True)
+    slack.add_message('hello', hello, mention=True, flags=re.IGNORECASE)
+
+    candy.add_to_slack(slack)
+    giphy.add_to_slack(slack)
+    intro.add_to_slack(slack)
+    pypi.add_to_slack(slack)
+    files.add_to_slack(slack)
+
+
+async def hello(message, slack, *_):
+    response = message.response()
+    response.text = 'Hello'
+    await slack.send(response)
 
 
 async def publish(message, slack, _, match):
@@ -83,25 +100,3 @@ async def help_(message, slack, *_):
 
     response.attachments.extend((help_msg, gif_help))
     await slack.send(response)
-
-
-@hookimpl
-def register_slack_messages():
-    commands = [
-        {
-            'match': '^help',
-            'func': help_,
-            'mention': True,
-            'flags': re.IGNORECASE
-        },
-        {
-            'match': 'tell (<(#|@)(?P<to_id>[A-Z0-9]*)(|.*)?>) (?P<item>.*)',
-            'func': publish,
-            'mention': True,
-            'flags': re.IGNORECASE,
-            'admin': True
-
-        },
-    ]
-
-    return commands

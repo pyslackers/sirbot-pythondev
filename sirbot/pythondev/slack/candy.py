@@ -1,14 +1,16 @@
-import logging
 import re
 
-from sirbot.slack.hookimpl import hookimpl
 from sirbot.slack.message import Attachment, SlackMessage
-
-logger = logging.getLogger('sirbot.pythondev')
 
 TRIGGER = ':bdfl:'
 USER_REGEX = re.compile('<@U.{8}>')
 TRIGGER_REGEX = re.compile(TRIGGER)
+
+
+def add_to_slack(slack):
+    slack.add_message(TRIGGER, add_candy_message)
+    slack.add_command('/leaderboard', func=leaderboard, public=False)
+    slack.add_event('reaction_added', add_candy_reaction)
 
 
 async def add_candy_message(message, slack, facades, *_):
@@ -93,40 +95,3 @@ async def leaderboard(command, slack, facades):
         response.attachments.append(att)
 
     await slack.send(response)
-
-
-@hookimpl
-def register_slack_messages():
-    commands = [
-        {
-            'match': TRIGGER,
-            'func': add_candy_message,
-        },
-    ]
-
-    return commands
-
-
-@hookimpl
-def register_slack_commands():
-    commands = [
-        {
-            'command': '/leaderboard',
-            'func': leaderboard,
-            'public': False
-        }
-    ]
-
-    return commands
-
-
-@hookimpl
-def register_slack_events():
-    events = [
-        {
-            'event': 'reaction_added',
-            'func': add_candy_reaction
-        },
-    ]
-
-    return events

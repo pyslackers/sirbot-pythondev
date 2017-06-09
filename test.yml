@@ -1,11 +1,13 @@
 sirbot:
   port: 8080
   plugins:
+    - sirbot.slack
     - sirbot.plugins.sqlite
     - sirbot.plugins.giphy
     - sirbot.plugins.pypi
     - sirbot.plugins.candy
-    - sirbot.slack
+    - sirbot.plugins.github
+    - sirbot.pythondev
 
 slack:
   priority: 20
@@ -14,19 +16,13 @@ slack:
     events: false
     commands: true
     actions: true
-  plugins:
-    - sirbot_plugin_pythondev
-    - sirbot_plugin_pythondev.admin
-    - sirbot_plugin_pythondev.candy
-    - sirbot_plugin_pythondev.files
-    - sirbot_plugin_pythondev.giphy
-    - sirbot_plugin_pythondev.intro
-    - sirbot_plugin_pythondev.pypi
-    - sirbot_plugin_pythondev.test
 
 sqlite:
   priority: 80
   file: ':memory:'
+
+pythondev:
+  priority: 1 
 
 logging:
   version: 1
