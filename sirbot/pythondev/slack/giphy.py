@@ -1,10 +1,11 @@
-import logging
 import json
 
-from sirbot.slack.hookimpl import hookimpl
 from sirbot.slack.message import Attachment, Button
 
-logger = logging.getLogger('sirbot.pythondev')
+
+def add_to_slack(slack):
+    slack.add_command('/gif', gif_search, public=False)
+    slack.add_action('gif_search', gif_search_action, public=False)
 
 
 async def gif_search(command, slack, facades):
@@ -103,29 +104,3 @@ async def gif_search_action(action, slack, facades):
 
     else:
         return
-
-
-@hookimpl
-def register_slack_commands():
-    commands = [
-        {
-            'command': '/gif',
-            'func': gif_search,
-            'public': False
-        }
-    ]
-
-    return commands
-
-
-@hookimpl
-def register_slack_actions():
-    commands = [
-        {
-            'callback_id': 'gif_search',
-            'func': gif_search_action,
-            'public': False
-        }
-    ]
-
-    return commands

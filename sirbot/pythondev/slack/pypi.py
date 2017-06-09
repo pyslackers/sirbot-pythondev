@@ -1,9 +1,8 @@
-import logging
-
-from sirbot.slack.hookimpl import hookimpl
 from sirbot.slack.message import Attachment
 
-logger = logging.getLogger('sirbot.pythondev')
+
+def add_to_slack(slack):
+    slack.add_command('/pypi', pypi_search, public=True)
 
 
 async def pypi_search(command, slack, facades):
@@ -52,16 +51,3 @@ async def pypi_search(command, slack, facades):
                         " `{0}`".format(command.text)
 
     await slack.send(response)
-
-
-@hookimpl
-def register_slack_commands():
-    commands = [
-        {
-            'command': '/pypi',
-            'func': pypi_search,
-            'public': False
-        }
-    ]
-
-    return commands

@@ -1,6 +1,5 @@
 import asyncio
 
-from sirbot.slack.hookimpl import hookimpl
 from sirbot.slack.message import SlackMessage
 
 INTRO_URL = 'https://github.com/pyslackers/community/blob/master/' \
@@ -17,21 +16,13 @@ seems so professional!
 May your :taco:s be plentiful!'''.format(INTRO_URL)
 
 
+def add_to_slack(slack):
+    slack.add_event('team_join', team_join)
+
+
 async def team_join(event, slack, _):
     await asyncio.sleep(60)
     to = await slack.users.get(event['user']['id'], dm=True)
     message = SlackMessage(to=to)
     message.text = INTRO_TEXT
     await slack.send(message)
-
-
-@hookimpl
-def register_slack_events():
-    commands = [
-        {
-            'event': 'team_join',
-            'func': team_join
-        }
-    ]
-
-    return commands
