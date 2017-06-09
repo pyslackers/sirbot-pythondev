@@ -1,3 +1,4 @@
+import re
 import logging
 
 from sirbot.slack.hookimpl import hookimpl
@@ -6,7 +7,7 @@ from sirbot.slack.message import Attachment, Select
 logger = logging.getLogger('sirbot.pythondev')
 
 
-async def file(command, slack, facades):
+async def file(command, slack, *_):
     response = command.response()
 
     if command.text == 'intro':
@@ -44,7 +45,7 @@ async def file(command, slack, facades):
     await slack.send(response)
 
 
-async def choose_file(action, slack, facade):
+async def choose_file(action, slack, *_):
     value = action.action['selected_options'][0]['value']
     response = action.response()
 
@@ -57,6 +58,18 @@ async def choose_file(action, slack, facade):
     else:
         response.text = '''Sorry we could not find this file'''
 
+    await slack.send(response)
+
+
+async def intro_doc(message, slack, *_):
+    response = message.response()
+    response.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'  # noqa
+    await slack.send(response)
+
+
+async def what_to_do(message, slack, *_):
+    response = message.response()
+    response.text = 'https://pythondev.slack.com/files/ndevox/F4A137J0J/What_to_do_next_on_your_Python_journey'  # noqa
     await slack.send(response)
 
 
@@ -81,6 +94,27 @@ def register_slack_actions():
             'func': choose_file,
             'public': False
         }
+    ]
+
+    return commands
+
+
+@hookimpl
+def register_slack_messages():
+    commands = [
+
+        {
+            'match': 'intro doc',
+            'func': intro_doc,
+            'mention': True,
+            'flags': re.IGNORECASE
+        },
+        {
+            'match': 'what to do',
+            'func': what_to_do,
+            'mention': True,
+            'flags': re.IGNORECASE
+        },
     ]
 
     return commands

@@ -1,51 +1,10 @@
-import asyncio
 import logging
 import re
 
 from sirbot.slack.hookimpl import hookimpl
-from sirbot.slack.message import Attachment, Field, SlackMessage
+from sirbot.slack.message import Attachment, Field
 
 logger = logging.getLogger('sirbot.pythondev')
-
-PUBLISH_SHORTCUT = {
-    '$feedback': 'https://docs.google.com/forms/d/e/1FAIpQLSfuM15Y5ObMDgFKOpeOEjYhUm9h4QW4VQ7mBXWcs9oOrjt0EQ/viewform?usp=sf_link'  # noqa
-}
-
-
-async def hello(message, slack, *_):
-    response = message.response()
-    response.text = 'Hello'
-    await slack.send(response)
-
-
-async def admin(message, slack, facades, _):
-    response = message.response()
-    title = 'New message from <@{frm}>'.format(frm=message.frm.id)
-    att = Attachment(
-        title=title,
-        fallback=title,
-        text=message.text[5:].strip()
-    )
-
-    admin_message = response.clone()
-    admin_message.attachments.append(att)
-    admin_message.to = await slack.channels.get(name='admin', update=False)
-    await slack.send(admin_message)
-
-    message.text = 'Your message was successfully sent to the admin team'
-    await slack.send(response)
-
-
-async def intro_doc(message, slack, *_):
-    response = message.response()
-    response.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'  # noqa
-    await slack.send(response)
-
-
-async def what_to_do(message, slack, *_):
-    response = message.response()
-    response.text = 'https://pythondev.slack.com/files/ndevox/F4A137J0J/What_to_do_next_on_your_Python_journey'  # noqa
-    await slack.send(response)
 
 
 async def publish(message, slack, _, match):
@@ -56,31 +15,25 @@ async def publish(message, slack, _, match):
 
     if to_id.startswith('C'):
         to = await slack.channels.get(to_id)
-        if to.is_member:
-            response.text = PUBLISH_SHORTCUT.get(item, item)
+        if to:
+            response.text = item
             response.to = to
         else:
-            response.text = 'Sorry I can not publish is this channel.' \
-                            ' I am not a member.'
+            response.text = 'Sorry I can not understand the destination.'
             response.to = response.frm
-
     elif to_id.startswith('U'):
         to = await slack.users.get(to_id, dm=True)
-        response.text = PUBLISH_SHORTCUT.get(item, item)
-        response.to = to
+        if to:
+            response.text = item
+            response.to = to
+        else:
+            response.text = 'Sorry I can not understand the destination.'
+            response.to = response.frm
     else:
         response.text = 'Sorry I can not understand the destination.'
         response.to = response.frm
 
     await slack.send(response)
-
-
-async def team_join(event, slack, _):
-    await asyncio.sleep(60)
-    to = await slack.users.get(event['user']['id'], dm=True)
-    message = SlackMessage(to=to)
-    message.text = 'https://pythondev.slack.com/files/mikefromit/F25EDF4KW/Intro_Doc'  # noqa
-    await slack.send(message)
 
 
 async def help_(message, slack, *_):
@@ -142,30 +95,6 @@ def register_slack_messages():
             'flags': re.IGNORECASE
         },
         {
-            'match': 'hello',
-            'func': hello,
-            'mention': True,
-            'flags': re.IGNORECASE
-        },
-        {
-            'match': '^admin.*',
-            'func': admin,
-            'mention': True,
-            'flags': re.IGNORECASE
-        },
-        {
-            'match': 'intro doc',
-            'func': intro_doc,
-            'mention': True,
-            'flags': re.IGNORECASE
-        },
-        {
-            'match': 'what to do',
-            'func': what_to_do,
-            'mention': True,
-            'flags': re.IGNORECASE
-        },
-        {
             'match': 'tell (<(#|@)(?P<to_id>[A-Z0-9]*)(|.*)?>) (?P<item>.*)',
             'func': publish,
             'mention': True,
@@ -173,18 +102,6 @@ def register_slack_messages():
             'admin': True
 
         },
-    ]
-
-    return commands
-
-
-@hookimpl
-def register_slack_events():
-    commands = [
-        {
-            'event': 'team_join',
-            'func': team_join
-        }
     ]
 
     return commands
