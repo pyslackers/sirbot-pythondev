@@ -2,6 +2,7 @@ from sirbot.core import hookimpl, Plugin
 
 from .github import add_to_github
 from .slack import add_to_slack
+from .scheduler import add_to_scheduler
 
 
 @hookimpl
@@ -27,6 +28,10 @@ class PythondevPlugin(Plugin):
         self._facades = facades
 
     async def start(self):
+
+        if 'scheduler' in self._facades:
+            scheduler_facade = self._facades.get('scheduler')
+            add_to_scheduler(scheduler_facade)
 
         if 'github' in self._facades:
             github_facade = self._facades.get('github')
