@@ -7,6 +7,7 @@ sirbot:
     - sirbot.plugins.pypi
     - sirbot.plugins.candy
     - sirbot.plugins.github
+    - sirbot.plugins.scheduler
     - sirbot.pythondev
 
 github:
