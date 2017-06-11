@@ -8,7 +8,7 @@ please use our <{}|referral code>. You get 10 USD and help support the
 
 
 def add_to_slack(slack):
-    slack.add_command('/do', func=share_digital_ocean, public=False)
+    slack.add_command('/do', func=share_digital_ocean, public=True)
 
 
 async def share_digital_ocean(command, slack, facades):
