@@ -3,8 +3,8 @@ DIGITAL_OCEAN_URL = 'https://digitalocean.com'
 
 DIGITAL_OCEAN_TEXT = '''Here at Python Developers we host our website and
 Slack bot on <{}|Digital Ocean>. If you are planning on using Digital Ocean,
-please use our <{}|referral code>. You get 10 USD and help support the 
-community!'''.format(DIGITAL_OCEAN_URL, DIGITAL_OCEAN_REFFERRAL_URL)
+please use our <{}|referral code>. You get 10 USD and help support the
+ community!'''.format(DIGITAL_OCEAN_URL, DIGITAL_OCEAN_REFFERRAL_URL)
 
 
 def add_to_slack(slack):
