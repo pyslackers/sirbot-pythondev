@@ -2,7 +2,7 @@ import re
 
 from sirbot.slack.message import Attachment, Field
 
-from . import candy, giphy, intro, pypi, files
+from . import candy, giphy, intro, pypi, files, admin
 
 
 def add_to_slack(slack):
@@ -16,6 +16,7 @@ def add_to_slack(slack):
     intro.add_to_slack(slack)
     pypi.add_to_slack(slack)
     files.add_to_slack(slack)
+    admin.add_to_slack(slack)
 
 
 async def hello(message, slack, *_):
