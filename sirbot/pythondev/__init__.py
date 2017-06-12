@@ -1,8 +1,8 @@
 from sirbot.core import hookimpl, Plugin
 
-from .github import add_to_github
-from .slack import add_to_slack
-from .scheduler import add_to_scheduler
+from .github import GitHubEndpoint
+from .scheduler import SchedulerJobs
+from .slack import SlackEndpoint
 
 
 @hookimpl
@@ -31,15 +31,15 @@ class PythondevPlugin(Plugin):
 
         if 'scheduler' in self._facades:
             scheduler_facade = self._facades.get('scheduler')
-            add_to_scheduler(scheduler_facade)
+            SchedulerJobs(self._config).add(scheduler_facade)
 
         if 'github' in self._facades:
             github_facade = self._facades.get('github')
-            add_to_github(github_facade)
+            GitHubEndpoint(self._config).add(github_facade)
 
         if 'slack' in self._facades:
             slack_facade = self._facades.get('slack')
-            add_to_slack(slack_facade)
+            SlackEndpoint(self._config).add(slack_facade)
 
         self._started = True
 
