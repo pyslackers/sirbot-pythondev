@@ -33,7 +33,7 @@ pythondev:
   priority: 1
   candy:
     trigger: ":bdfl:"
-  githhub:
+  github:
     channel: community_projects
   python_jobs:
     looking: >
