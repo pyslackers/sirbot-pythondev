@@ -318,6 +318,7 @@ class SlackEndpoint:
 
         if command.text:
             urls = await giphy.search(command.text)
+            urls = [url.split('?')[0] for url in urls]
 
             att = Attachment(
                 title='You searched for `{}`'.format(command.text),
