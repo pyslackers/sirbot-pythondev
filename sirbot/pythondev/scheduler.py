@@ -38,6 +38,6 @@ class SchedulerJobs:
         await slack.send(message)
 
         message_tips = SlackMessage(to=channel)
-        message_tips.text = self.config['python_jobs']['hiting_tips']
+        message_tips.text = self.config['python_jobs']['hiring_tips']
         message_tips.thread = message.thread
         await slack.send(message_tips)
