@@ -167,9 +167,10 @@ class SlackEndpoint:
             user_count = await candy.add(user, count)
             msg = response.clone()
             msg.to = slack_user
-            msg.text = '<@{sender}> gave you {count} {trigger}.' \
-                       ' You now have {user_count} {trigger}.'
-            msg.text.format(
+
+            text_message = '<@{sender}> gave you {count} {trigger}.' \
+                           ' You now have {user_count} {trigger}.'
+            msg.text = text_message.format(
                 sender=message.frm.id,
                 count=count,
                 trigger=self.config['candy']['trigger'],
