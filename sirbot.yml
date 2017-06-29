@@ -16,6 +16,7 @@ github:
 slack:
   priority: 20
   rtm: true
+  ping: "sirbot"
   save:
     messages: true
     events: false
