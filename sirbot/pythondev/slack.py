@@ -49,6 +49,8 @@ class SlackEndpoint:
 
         slack.add_command('/pypi', self.pypi_search, public=True)
 
+        slack.add_event('member_joined_channel', self.members_joined)
+
     async def hello(self, message, slack, *_):
         response = message.response()
         response.text = 'Hello'
@@ -470,3 +472,13 @@ class SlackEndpoint:
                             " `{0}`".format(command.text)
 
         await slack.send(response)
+
+        async def members_joined(self, event, slack, _):
+            if event['channel'] == await slack.channels.get(name='general').id:
+                await slack.channels.get('general', update=True)
+                members = await slack.channels.get(name='general').members
+                if (len(members) % 1000) == 0:
+                    to = await slack.channels.get(name='general').members
+                    message = SlackMessage(to=to)
+                    message.text = 'We have just reached {} members!'.format()
+                    await slack.send(message)
