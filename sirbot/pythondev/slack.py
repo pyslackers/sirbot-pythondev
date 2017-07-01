@@ -475,10 +475,10 @@ class SlackEndpoint:
 
         async def members_joined(self, event, slack, _):
             if event['channel'] == await slack.channels.get(name='general').id:
-                all_members = await slack.channels.get('general', update=True)
-                if (len(all_members.members) % 1000) == 0:
-                    to = all_members
+                general_channel = await slack.channels.get('general', update=True)
+                if (len(general_channel.members) % 1000) == 0:
+                    to = general_channel
                     message = SlackMessage(to=to)
                     message.text = 'We have just reached {} members!'.format(
-                        len(all_members.members))
+                        len(general_channel.members))
                     await slack.send(message)
