@@ -475,8 +475,8 @@ class SlackEndpoint:
 
     async def members_joined(self, event, slack, _):
         if event['channel'] == (await slack.channels.get(name='general')).id:
-            general_channel = await slack.channels.get('general',
-                                                      fetch=True)
+            general_channel = await slack.channels.get(name='general',
+                                                       fetch=True)
             num_members = len(general_channel.members)
             if (num_members % 1000) == 0:
                 to = general_channel
