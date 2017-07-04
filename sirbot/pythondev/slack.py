@@ -34,11 +34,6 @@ class SlackEndpoint:
 
         slack.add_command('/do', self.share_digital_ocean, public=True)
 
-        slack.add_message('intro doc',
-                          self.intro_doc, mention=True, flags=re.IGNORECASE)
-        slack.add_message('what to do',
-                          self.what_to_do, mention=True, flags=re.IGNORECASE)
-
         slack.add_action('choose_file', self.choose_file, public=False)
         slack.add_command('/file', self.file, public=False)
 
@@ -250,12 +245,12 @@ class SlackEndpoint:
     async def file(self, command, slack, *_):
         response = command.response()
 
-        if command.text == 'intro':
-            response.response_type = 'in_channel'
-            response.text = self.config['files']['intro_doc']
-        elif command.text == 'what to do':
-            response.response_type = 'in_channel'
-            response.text = self.config['files']['what_to_do']
+        for file in self.config['files'].values():
+            if command.text == file['match']:
+                response.response_type = 'in_channel'
+                response.text = self.config['files_template'].format(
+                    file['url'], file['name'])
+                break
         else:
             att = Attachment(
                 title='Choose a file to show',
@@ -264,14 +259,8 @@ class SlackEndpoint:
             )
 
             data = [
-                {
-                    'text': 'Intro doc',
-                    'value': 'intro_doc'
-                },
-                {
-                    'text': 'What to do doc',
-                    'value': 'what_to_do_doc'
-                }
+                {'value': file['match'], 'text': file['name']}
+                for file in self.config['files'].values()
             ]
 
             select = Select(
@@ -287,32 +276,13 @@ class SlackEndpoint:
     async def choose_file(self, action, slack, *_):
         value = action.action['selected_options'][0]['value']
         response = action.response()
+        response.text = 'No file found !'
 
-        try:
-            response.replace_original = False
-            response.text = self.config['files']['msg'].format(
-                self.config['files'][value]['url'],
-                self.config['files'][value]['name']
-            )
-        except KeyError:
-            response.text = '''Sorry we could not find this file'''
-
-        await slack.send(response)
-
-    async def intro_doc(self, message, slack, *_):
-        response = message.response()
-        response.text = self.config['files']['msg'].format(
-            self.config['files']['intro_doc']['url'],
-            self.config['files']['intro_doc']['name']
-        )
-        await slack.send(response)
-
-    async def what_to_do(self, message, slack, *_):
-        response = message.response()
-        response.text = self.config['files']['msg'].format(
-            self.config['files']['what_to_do']['url'],
-            self.config['files']['what_to_do']['name']
-        )
+        for file in self.config['files'].values():
+            if value == file['match']:
+                response.replace_original = False
+                response.text = self.config['files_template'].format(
+                    file['url'], file['name'])
         await slack.send(response)
 
     async def gif_search(self, command, slack, facades):

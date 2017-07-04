@@ -62,15 +62,17 @@ pythondev:
         use our <{}|referral code>. You get 10 USD, while helping support the
         community by contributing to hosting fees for our site and
         <@sirbotalot>!
+  files_template: >
+    Click <{}|here> to access the {}.
   files:
-    msg: >
-      Click <{}|here> to access the {}.
     intro_doc:
-      name: Intro doc
+      name: introduction doc
+      match: intro
       url: 'https://github.com/pyslackers/community/blob/master/introduction.md'
-    what_to_do:
-      name: What to do doc
-      url: 'https://pythondev.slack.com/files/ndevox/F4A137J0J/What_to_do_next_on_your_Python_journey'
+    what_next:
+      name: what's next doc
+      match: what's next
+      url: 'https://github.com/pyslackers/community/blob/master/whats_next.md'
   join: >
     Welcome to the community :tada:
 
