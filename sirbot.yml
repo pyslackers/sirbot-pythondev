@@ -100,9 +100,9 @@ logging:
       level: WARNING
       formatter: simple
   loggers:
-    sirbot:
-      level: DEBUG
-      handlers: [file, console]
-      propagate: no
     sirbot.plugins.sqlite:
       level: WARNING
+  root:
+    level: DEBUG
+    handlers: [file, console]
+    propagate: no
