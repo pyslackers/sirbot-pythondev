@@ -41,10 +41,9 @@ class SlackEndpoint:
         slack.add_action('gif_search', self.gif_search_action, public=False)
 
         slack.add_event('team_join', self.team_join)
+        slack.add_event('team_join', self.members_joined)
 
         slack.add_command('/pypi', self.pypi_search, public=True)
-
-        slack.add_event('member_joined_channel', self.members_joined)
 
     async def hello(self, message, slack, *_):
         response = message.response()
@@ -444,13 +443,14 @@ class SlackEndpoint:
         await slack.send(response)
 
     async def members_joined(self, event, slack, _):
-        if event['channel'] == (await slack.channels.get(name='general')).id:
-            general_channel = await slack.channels.get(name='general',
-                                                       fetch=True)
-            num_members = len(general_channel.members)
-            if (num_members % 1000) == 0:
-                to = general_channel
-                message = SlackMessage(to=to)
-                message.text = 'We have just reached {} members!'.format(
-                    num_members)
-                await slack.send(message)
+
+        members = await slack.users.all(fetch=True, deleted=False)
+        if len(members) % 1000 == 0:
+            to = await slack.channels.get(name='general')
+            message = SlackMessage(to=to)
+            message.text = ':tada: Everyone give a warm welcome to <@{user}>' \
+                           ' our {number} members ! :tada:' \
+                           '\nhttps://youtu.be/pbSCWgZQf_g?t=3'
+            message.text = message.text.format(number=len(members),
+                                               user=event['user']['id'])
+            await slack.send(message)
