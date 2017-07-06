@@ -14,7 +14,7 @@ class GitHubEndpoint:
         github.add_event('issues', self.issues)
         github.add_event('pull_request', self.pull_request)
 
-    async def issues(self, event, facades):
+    async def issues(self, event, registry):
         att = None
 
         if event['action'] == 'opened':
@@ -23,7 +23,7 @@ class GitHubEndpoint:
             att = self._issue_format(event, 'danger')
 
         if att:
-            slack = facades.get('slack')
+            slack = registry.get('slack')
             channel = await slack.channels.get(
                 name=self.config['github']['channel']
             )
@@ -54,7 +54,7 @@ class GitHubEndpoint:
 
         return att
 
-    async def pull_request(self, event, facades):
+    async def pull_request(self, event, registry):
         att = None
 
         if event['action'] == 'opened':
@@ -69,7 +69,7 @@ class GitHubEndpoint:
             att = self._pull_request_format(event, data)
 
         if att:
-            slack = facades.get('slack')
+            slack = registry.get('slack')
             channel = await slack.channels.get(
                 name=self.config['github']['channel']
             )
