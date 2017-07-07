@@ -20,7 +20,7 @@ class SchedulerJobs:
     async def looking_for_job(self):
         slack = self.registry.get('slack')
 
-        channel = await slack.channels.get(name='python_jobs')
+        channel = await slack.channels.get(name='job_board')
         message = SlackMessage(to=channel)
         message.text = self.config['python_jobs']['looking']
         await slack.send(message)
@@ -33,7 +33,7 @@ class SchedulerJobs:
     async def hiring(self):
         slack = self.registry.get('slack')
 
-        channel = await slack.channels.get(name='python_jobs')
+        channel = await slack.channels.get(name='job_board')
         message = SlackMessage(to=channel)
         message.text = self.config['python_jobs']['hiring']
         await slack.send(message)
