@@ -128,7 +128,7 @@ class SlackEndpoint:
         response.attachments.extend((help_msg, gif_help))
         await slack.send(response)
 
-    async def share_admin(self, command, slack, facades):
+    async def share_admin(self, command, slack, registry):
 
         response = command.response()
         to = await slack.groups.get('G1DRT62UC')
@@ -143,7 +143,7 @@ class SlackEndpoint:
         response.attachments.append(att)
         await slack.send(response)
 
-    async def add_candy_message(self, message, slack, facades, *_):
+    async def add_candy_message(self, message, slack, registry, *_):
         users_raw = self.config['candy']['user_regex'].findall(message.text)
         users = [user[2:-1] for user in users_raw if
                  user[2:-1] != message.frm.id]
@@ -151,7 +151,7 @@ class SlackEndpoint:
         if not users:
             return
 
-        candy = facades.get('candy')
+        candy = registry.get('candy')
         response = message.response()
         count = len(
             self.config['candy']['trigger_regex'].findall(message.text)
@@ -184,9 +184,9 @@ class SlackEndpoint:
         for msg in receivers_messages:
             await slack.send(msg)
 
-    async def add_candy_reaction(self, event, slack, facades):
+    async def add_candy_reaction(self, event, slack, registry):
         if event['reaction'] == 'bdfl' and event['user'] != event['item_user']:
-            candy = facades.get('candy')
+            candy = registry.get('candy')
             user_count = await candy.add(event['item_user'])
 
             message_from = SlackMessage(
@@ -210,10 +210,10 @@ class SlackEndpoint:
         else:
             return
 
-    async def leaderboard(self, command, slack, facades):
+    async def leaderboard(self, command, slack, registry):
         response = command.response()
 
-        candy = facades.get('candy')
+        candy = registry.get('candy')
         data = await candy.top(count=10)
         att = Attachment(
             title='{} Leaderboard'.format(self.config['candy']['trigger']),
@@ -233,7 +233,7 @@ class SlackEndpoint:
 
         await slack.send(response)
 
-    async def share_digital_ocean(self, command, slack, facades):
+    async def share_digital_ocean(self, command, slack, registry):
         response = command.response()
         response.text = self.config['digital_ocean']['msg'].format(
             self.config['digital_ocean']['url'],
@@ -284,9 +284,9 @@ class SlackEndpoint:
                     file['url'], file['name'])
         await slack.send(response)
 
-    async def gif_search(self, command, slack, facades):
+    async def gif_search(self, command, slack, registry):
         response = command.response()
-        giphy = facades.get('giphy')
+        giphy = registry.get('giphy')
 
         if command.text:
             urls = await giphy.search(command.text)
@@ -319,7 +319,7 @@ class SlackEndpoint:
             response.attachments.append(att)
             await slack.send(response)
 
-    async def gif_search_action(self, action, slack, facades):
+    async def gif_search_action(self, action, slack, registry):
         response = action.response()
         data = json.loads(action.action['value'])
 
@@ -392,9 +392,9 @@ class SlackEndpoint:
             self.config['files']['intro_doc'])
         await slack.send(message)
 
-    async def pypi_search(self, command, slack, facades):
+    async def pypi_search(self, command, slack, registry):
         response = command.response()
-        pypi = facades.get('pypi')
+        pypi = registry.get('pypi')
         results = await pypi.search(command.text)
 
         if not command.text:

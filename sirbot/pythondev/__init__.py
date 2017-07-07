@@ -16,30 +16,31 @@ class PythondevPlugin(Plugin):
     __name__ = 'pythondev'
 
     def __init__(self, loop):
+        super().__init__(loop)
         self._loop = loop
         self._config = None
         self._session = None
-        self._facades = None
+        self._registry = None
         self._started = False
 
-    async def configure(self, config, router, session, facades):
+    async def configure(self, config, router, session, registry):
         self._config = config
         self._session = session
-        self._facades = facades
+        self._registry = registry
 
     async def start(self):
 
-        if 'scheduler' in self._facades:
-            scheduler_facade = self._facades.get('scheduler')
-            SchedulerJobs(self._config).add(scheduler_facade)
+        if 'scheduler' in self._registry:
+            scheduler_plugin = self._registry.get('scheduler')
+            SchedulerJobs(self._config, self._registry).add(scheduler_plugin)
 
-        if 'github' in self._facades:
-            github_facade = self._facades.get('github')
-            GitHubEndpoint(self._config).add(github_facade)
+        if 'github' in self._registry:
+            github_plugin = self._registry.get('github')
+            GitHubEndpoint(self._config).add(github_plugin)
 
-        if 'slack' in self._facades:
-            slack_facade = self._facades.get('slack')
-            SlackEndpoint(self._config).add(slack_facade)
+        if 'slack' in self._registry:
+            slack_plugin = self._registry.get('slack')
+            SlackEndpoint(self._config).add(slack_plugin)
 
         self._started = True
 

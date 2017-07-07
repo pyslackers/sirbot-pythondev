@@ -7,17 +7,18 @@ logger = logging.getLogger(__name__)
 
 class SchedulerJobs:
 
-    def __init__(self, config):
+    def __init__(self, config, registry):
         self.config = config
+        self.registry = registry
 
     def add(self, scheduler):
-        scheduler.add_job('looking_for_job', self.looking_for_job,
+        scheduler.add_job(self.looking_for_job, name='looking_for_job',
                           trigger='cron', day_of_week=0, hour=8)
-        scheduler.add_job('hiring', self.hiring,
+        scheduler.add_job(self.hiring, name='hiring',
                           trigger='cron', day_of_week=0, hour=8)
 
-    async def looking_for_job(self, facade):
-        slack = facade.get('slack')
+    async def looking_for_job(self):
+        slack = self.registry.get('slack')
 
         channel = await slack.channels.get(name='python_jobs')
         message = SlackMessage(to=channel)
@@ -29,8 +30,8 @@ class SchedulerJobs:
         message_tips.thread = message.thread
         await slack.send(message_tips)
 
-    async def hiring(self, facade):
-        slack = facade.get('slack')
+    async def hiring(self):
+        slack = self.registry.get('slack')
 
         channel = await slack.channels.get(name='python_jobs')
         message = SlackMessage(to=channel)
