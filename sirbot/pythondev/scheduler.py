@@ -1,5 +1,6 @@
 import logging
 
+from sirbot.core import registry
 from sirbot.slack.message import SlackMessage
 
 logger = logging.getLogger(__name__)
@@ -7,9 +8,8 @@ logger = logging.getLogger(__name__)
 
 class SchedulerJobs:
 
-    def __init__(self, config, registry):
+    def __init__(self, config):
         self.config = config
-        self.registry = registry
 
     def add(self, scheduler):
         scheduler.add_job(self.looking_for_job, name='looking_for_job',
@@ -18,7 +18,7 @@ class SchedulerJobs:
                           trigger='cron', day_of_week=0, hour=8)
 
     async def looking_for_job(self):
-        slack = self.registry.get('slack')
+        slack = registry.get('slack')
 
         channel = await slack.channels.get(name='job_board')
         message = SlackMessage(to=channel)
@@ -31,7 +31,7 @@ class SchedulerJobs:
         await slack.send(message_tips)
 
     async def hiring(self):
-        slack = self.registry.get('slack')
+        slack = registry.get('slack')
 
         channel = await slack.channels.get(name='job_board')
         message = SlackMessage(to=channel)

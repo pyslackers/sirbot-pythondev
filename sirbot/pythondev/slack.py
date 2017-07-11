@@ -2,6 +2,7 @@ import asyncio
 import json
 import re
 
+from sirbot.core import registry
 from sirbot.slack.message import SlackMessage, Attachment, Field, Button, \
     Select
 
@@ -50,7 +51,7 @@ class SlackEndpoint:
         response.text = 'Hello'
         await slack.send(response)
 
-    async def publish(self, message, slack, _, match):
+    async def publish(self, message, slack, match):
         response = message.response()
 
         to_id = match.group('to_id')
@@ -128,7 +129,7 @@ class SlackEndpoint:
         response.attachments.extend((help_msg, gif_help))
         await slack.send(response)
 
-    async def share_admin(self, command, slack, registry):
+    async def share_admin(self, command, slack):
 
         response = command.response()
         to = await slack.groups.get('G1DRT62UC')
@@ -143,7 +144,7 @@ class SlackEndpoint:
         response.attachments.append(att)
         await slack.send(response)
 
-    async def add_candy_message(self, message, slack, registry, *_):
+    async def add_candy_message(self, message, slack, *_):
         users_raw = self.config['candy']['user_regex'].findall(message.text)
         users = [user[2:-1] for user in users_raw if
                  user[2:-1] != message.frm.id]
@@ -184,7 +185,7 @@ class SlackEndpoint:
         for msg in receivers_messages:
             await slack.send(msg)
 
-    async def add_candy_reaction(self, event, slack, registry):
+    async def add_candy_reaction(self, event, slack):
         if event['reaction'] == 'bdfl' and event['user'] != event['item_user']:
             candy = registry.get('candy')
             user_count = await candy.add(event['item_user'])
@@ -210,7 +211,7 @@ class SlackEndpoint:
         else:
             return
 
-    async def leaderboard(self, command, slack, registry):
+    async def leaderboard(self, command, slack):
         response = command.response()
 
         candy = registry.get('candy')
@@ -233,7 +234,7 @@ class SlackEndpoint:
 
         await slack.send(response)
 
-    async def share_digital_ocean(self, command, slack, registry):
+    async def share_digital_ocean(self, command, slack):
         response = command.response()
         response.text = self.config['digital_ocean']['msg'].format(
             self.config['digital_ocean']['url'],
@@ -284,7 +285,7 @@ class SlackEndpoint:
                     file['url'], file['name'])
         await slack.send(response)
 
-    async def gif_search(self, command, slack, registry):
+    async def gif_search(self, command, slack):
         response = command.response()
         giphy = registry.get('giphy')
 
@@ -319,7 +320,7 @@ class SlackEndpoint:
             response.attachments.append(att)
             await slack.send(response)
 
-    async def gif_search_action(self, action, slack, registry):
+    async def gif_search_action(self, action, slack):
         response = action.response()
         data = json.loads(action.action['value'])
 
@@ -392,7 +393,7 @@ class SlackEndpoint:
             self.config['files']['intro_doc']['url'])
         await slack.send(message)
 
-    async def pypi_search(self, command, slack, registry):
+    async def pypi_search(self, command, slack):
         response = command.response()
         pypi = registry.get('pypi')
         results = await pypi.search(command.text)
