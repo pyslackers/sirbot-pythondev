@@ -199,7 +199,7 @@ class SlackEndpoint:
                 to=(await slack.users.get(event['item_user'], dm=True)))
             message_to.text = '<@{sender}> gave you 1 {trigger}. ' \
                               'You now have {user_count} {trigger}.'
-            message_to.txt.format(
+            message_to.text = message_to.text.format(
                 sender=event['user'],
                 trigger=self.config['candy']['trigger'],
                 user_count=user_count
@@ -389,7 +389,7 @@ class SlackEndpoint:
         to = await slack.users.get(event['user']['id'], dm=True)
         message = SlackMessage(to=to)
         message.text = self.config['join'].format(
-            self.config['files']['intro_doc'])
+            self.config['files']['intro_doc']['url'])
         await slack.send(message)
 
     async def pypi_search(self, command, slack, registry):
