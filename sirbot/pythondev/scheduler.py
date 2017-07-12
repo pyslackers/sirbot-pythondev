@@ -11,7 +11,8 @@ class SchedulerJobs:
     def __init__(self, config):
         self.config = config
 
-    def add(self, scheduler):
+    def add(self):
+        scheduler = registry.get('scheduler')
         scheduler.add_job(self.looking_for_job, name='looking_for_job',
                           trigger='cron', day_of_week=0, hour=8)
         scheduler.add_job(self.hiring, name='hiring',

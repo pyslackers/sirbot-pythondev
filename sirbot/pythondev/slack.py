@@ -16,7 +16,8 @@ class SlackEndpoint:
             self.config['candy']['trigger']
         )
 
-    def add(self, slack):
+    def add(self):
+        slack = registry.get('slack')
         slack.add_message('^help', self.help_, flags=re.IGNORECASE,
                           mention=True)
         slack.add_message('tell (<(#|@)(?P<to_id>[A-Z0-9]*)(|.*)?>)'

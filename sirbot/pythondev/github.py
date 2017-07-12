@@ -11,7 +11,8 @@ class GitHubEndpoint:
     def __init__(self, config):
         self.config = config
 
-    def add(self, github):
+    def add(self):
+        github = registry.get('github')
         github.add_event(self.issues, 'issues')
         github.add_event(self.pull_request, 'pull_request')
 
