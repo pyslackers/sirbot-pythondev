@@ -11,7 +11,7 @@ if sys.version_info < (3, 5):
 
 
 def load_package_meta():
-    meta_path = convert_path('./sirbot/pythondev/__meta__.py')
+    meta_path = convert_path('./pythondev/__meta__.py')
     meta_ns = {}
     with open(meta_path) as f:
         exec(f.read(), meta_ns)
@@ -61,10 +61,10 @@ setup(
         'slack',
     ],
     packages=[
-        'sirbot.pythondev',
+        'sirbot-pythondev',
     ],
     package_dir={
-        'sirbot.pythondev': 'sirbot/pythondev',
+        'sirbot-pythondev': 'pythondev',
     },
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and
