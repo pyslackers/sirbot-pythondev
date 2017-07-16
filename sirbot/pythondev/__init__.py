@@ -1,4 +1,4 @@
-from sirbot.core import hookimpl, Plugin
+from sirbot.core import hookimpl, Plugin, registry
 
 from .github import GitHubEndpoint
 from .scheduler import SchedulerJobs
@@ -20,27 +20,22 @@ class PythondevPlugin(Plugin):
         self._loop = loop
         self._config = None
         self._session = None
-        self._registry = None
         self._started = False
 
-    async def configure(self, config, router, session, registry):
+    async def configure(self, config, router, session):
         self._config = config
         self._session = session
-        self._registry = registry
 
     async def start(self):
 
-        if 'scheduler' in self._registry:
-            scheduler_plugin = self._registry.get('scheduler')
-            SchedulerJobs(self._config, self._registry).add(scheduler_plugin)
+        if 'scheduler' in registry:
+            SchedulerJobs(self._config).add()
 
-        if 'github' in self._registry:
-            github_plugin = self._registry.get('github')
-            GitHubEndpoint(self._config).add(github_plugin)
+        if 'github' in registry:
+            GitHubEndpoint(self._config).add()
 
-        if 'slack' in self._registry:
-            slack_plugin = self._registry.get('slack')
-            SlackEndpoint(self._config).add(slack_plugin)
+        if 'slack' in registry:
+            SlackEndpoint(self._config).add()
 
         self._started = True
 

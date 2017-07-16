@@ -1,5 +1,6 @@
 import logging
 
+from sirbot.core import registry
 from sirbot.slack.message import SlackMessage, Attachment
 
 logger = logging.getLogger(__name__)
@@ -10,11 +11,12 @@ class GitHubEndpoint:
     def __init__(self, config):
         self.config = config
 
-    def add(self, github):
+    def add(self):
+        github = registry.get('github')
         github.add_event(self.issues, 'issues')
         github.add_event(self.pull_request, 'pull_request')
 
-    async def issues(self, event, registry):
+    async def issues(self, event):
         att = None
 
         if event['action'] == 'opened':
@@ -54,7 +56,7 @@ class GitHubEndpoint:
 
         return att
 
-    async def pull_request(self, event, registry):
+    async def pull_request(self, event):
         att = None
 
         if event['action'] == 'opened':
