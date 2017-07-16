@@ -8,7 +8,7 @@ sirbot:
     - sirbot.plugins.candy
     - sirbot.plugins.github
     - sirbot.plugins.scheduler
-    - sirbot.pythondev
+    - pythondev
 
 github:
   endpoint: "/github"
