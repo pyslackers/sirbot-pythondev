@@ -11,8 +11,8 @@ class GitHubEndpoint:
         self.config = config
 
     def add(self, github):
-        github.add_event('issues', self.issues)
-        github.add_event('pull_request', self.pull_request)
+        github.add_event(self.issues, 'issues')
+        github.add_event(self.pull_request, 'pull_request')
 
     async def issues(self, event, registry):
         att = None
