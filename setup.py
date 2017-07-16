@@ -78,7 +78,6 @@ setup(
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     include_package_data=True,
-    install_requires=parse_reqs('./requirements.txt'),
     zip_safe=False,
     tests_require=[
         'pytest',
