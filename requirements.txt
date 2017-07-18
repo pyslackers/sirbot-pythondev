@@ -1,3 +1,3 @@
-git+https://github.com/pyslackers/sir-bot-a-lot.git@c780be15d47fe27f6fec65be38c6d3d764f75449#egg=sir-bot-a-lot
-git+https://github.com/pyslackers/sirbot-slack.git@a01b3ddf65067c1bc3717bea8a65a060fafb3f54#egg=sirbot.slack
-git+https://github.com/pyslackers/sirbot-plugins.git@9d37c6d33a7269a09a0dd7d23641393b8b871c6e#egg=sirbot.plugins
+git+https://github.com/pyslackers/sir-bot-a-lot.git@12a1bc8ae6c5ed980bef3bef53f38be00ba362e1#egg=sir-bot-a-lot
+git+https://github.com/pyslackers/sirbot-slack.git@5d1b4d1ebe63fc86e89a014c6fae7e9e460ab034#egg=sirbot.slack
+git+https://github.com/pyslackers/sirbot-plugins.git@0cc0830b12efff2ef57a9bf3a5d1a82dab600ccc#egg=sirbot.plugins
