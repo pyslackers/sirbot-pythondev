@@ -61,10 +61,10 @@ setup(
         'slack',
     ],
     packages=[
-        'sirbot-pythondev',
+        'pythondev',
     ],
     package_dir={
-        'sirbot-pythondev': 'pythondev',
+        'pythondev': 'pythondev',
     },
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and
