@@ -27,25 +27,25 @@ class SlackEndpoint:
         slack.add_message('hello', self.hello, mention=True,
                           flags=re.IGNORECASE)
 
-        slack.add_command('/admin', func=self.share_admin, public=False)
+        slack.add_command('/admin', func=self.share_admin)
 
         slack.add_message(self.config['candy']['trigger'],
                           self.add_candy_message)
-        slack.add_command('/leaderboard', self.leaderboard, public=False)
+        slack.add_command('/leaderboard', self.leaderboard)
         slack.add_event('reaction_added', self.add_candy_reaction)
 
-        slack.add_command('/do', self.share_digital_ocean, public=True)
+        slack.add_command('/do', self.share_digital_ocean)
 
-        slack.add_action('choose_file', self.choose_file, public=False)
-        slack.add_command('/file', self.file, public=False)
+        slack.add_action('choose_file', self.choose_file)
+        slack.add_command('/file', self.file)
 
-        slack.add_command('/gif', self.gif_search, public=False)
-        slack.add_action('gif_search', self.gif_search_action, public=False)
+        slack.add_command('/gif', self.gif_search)
+        slack.add_action('gif_search', self.gif_search_action)
 
         slack.add_event('team_join', self.team_join)
         slack.add_event('team_join', self.members_joined)
 
-        slack.add_command('/pypi', self.pypi_search, public=True)
+        slack.add_command('/pypi', self.pypi_search)
 
     async def hello(self, message, slack, *_):
         response = message.response()
@@ -253,6 +253,7 @@ class SlackEndpoint:
                     file['url'], file['name'])
                 break
         else:
+            response.response_type = 'ephemeral'
             att = Attachment(
                 title='Choose a file to show',
                 fallback='Choose a file to show',
@@ -291,6 +292,7 @@ class SlackEndpoint:
         giphy = registry.get('giphy')
 
         if command.text:
+            response.response_type = 'ephemeral'
             urls = await giphy.search(command.text)
             urls = [url.split('?')[0] for url in urls]
 
@@ -400,6 +402,7 @@ class SlackEndpoint:
         results = await pypi.search(command.text)
 
         if not command.text:
+            response.response_type = 'ephemeral'
             response.text = 'Please enter the package name you wish to find'
             await slack.send(response)
             return
@@ -439,6 +442,7 @@ class SlackEndpoint:
                 command.frm.id,
                 command.text)
         else:
+            response.response_type = 'ephemeral'
             response.text = "Could not find anything on PyPi matching" \
                             " `{0}`".format(command.text)
 
