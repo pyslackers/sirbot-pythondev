@@ -5,6 +5,7 @@ python:
 
 script:
   - python setup.py flake8
+  - travis/dothub.sh
 
 deploy:
   provider: script
