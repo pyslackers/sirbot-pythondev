@@ -5,3 +5,11 @@ python:
 
 script:
   - python setup.py flake8
+
+deploy:
+  provider: script
+  script: travis/dothub.sh
+  on:
+#    repo: pyslackers/sirbot-pythondev
+#    branch: master
+    python: '3.6'

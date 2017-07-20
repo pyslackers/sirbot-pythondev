@@ -40,7 +40,7 @@ options:
   allow_merge_commit: false
   allow_rebase_merge: true
   allow_squash_merge: true
-  description: Sir-bot-a-lot configuration for pythondev.slack.com
+  description: Sir Bot-a-lot configuration for pythondev.slack.com
   has_downloads: true
   has_issues: true
   has_wiki: false
