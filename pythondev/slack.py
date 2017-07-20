@@ -48,6 +48,7 @@ class SlackEndpoint:
         slack.add_command('/pypi', self.pypi_search)
 
         slack.add_command('/moveto', self.move_to)
+        # Escape channels, users, and links sent to your app
 
     async def hello(self, message, slack, *_):
         response = message.response()
