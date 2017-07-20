@@ -6,7 +6,7 @@ python:
 script:
   - python setup.py flake8
   - pip install dothub
-  - yes | dothub repo --owner pyslackers --repository sirbot-pythondev push
+  - yes | dothub --user ovv repo --owner pyslackers --repository sirbot-pythondev push
 
 deploy:
   provider: script
