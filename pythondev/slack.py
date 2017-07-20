@@ -47,6 +47,9 @@ class SlackEndpoint:
 
         slack.add_command('/pypi', self.pypi_search)
 
+        slack.add_command('/moveto', self.move_to)
+        # Escape channels, users, and links sent to your app
+
     async def hello(self, message, slack, *_):
         response = message.response()
         response.text = 'Hello'
@@ -460,3 +463,27 @@ class SlackEndpoint:
             message.text = message.text.format(number=len(members),
                                                user=event['user']['id'])
             await slack.send(message)
+
+    async def move_to(self, command, slack):
+        response = command.response(type_='ephemeral')
+        command.text = command.text.strip()
+        if not command.text:
+            response.text = 'Please enter the channel name'
+        elif command.text.startswith('<'):
+            match = re.search(
+                "<(#|@)(?P<to_id>[A-Z0-9]*)(|.*)?>", command.text)
+            if match is None:
+                response.text = 'Sorry I can not understand the destination.'
+            else:
+                to = await slack.channels.get(match.group('to_id'))
+                if to:
+                    response.response_type = 'in_channel'
+                    response.text = self.config['moveto']['msg'].format(
+                        to.id, to.name)
+                else:
+                    response.text = 'Sorry I can not \
+                    understand the destination.'
+        else:
+            response.text = 'Sorry I can not understand the destination.'
+
+        await slack.send(response)

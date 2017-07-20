@@ -82,6 +82,10 @@ pythondev:
     seems so professional!\n\n
 
     May your :taco:s be plentiful!
+  moveto:
+    msg: >
+      Looks like conversation is going off topic. Please move the conversation to <#{}|{}>
+
 
 logging:
   version: 1
