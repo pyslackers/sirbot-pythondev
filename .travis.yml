@@ -5,7 +5,8 @@ python:
 
 script:
   - python setup.py flake8
-  - travis/dothub.sh
+  - pip install dothub
+  - yes | dothub repo --owner pyslackers --repository sirbot-pythondev push
 
 deploy:
   provider: script
