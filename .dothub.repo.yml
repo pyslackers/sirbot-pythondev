@@ -1,30 +1,49 @@
 collaborators:
+  mikefromit:
+    permission: admin
+  mrasband:
+    permission: admin
   ovv:
     permission: admin
-hooks: {}
+  seanson:
+    permission: admin
 labels:
   bug:
     color: ee0701
-  duplicate:
+  difficulty/easy:
+    color: c2e0c6
+  difficulty/hard:
+    color: e99695
+  difficulty/medium:
+    color: fef2c0
+  difficulty/newcomers:
+    color: c5def5
+  documentation:
+    color: 1d76db
+  etc/blocked:
+    color: b60205
+  etc/duplicate:
     color: cccccc
-  enhancement:
-    color: 84b6eb
+  etc/invalid:
+    color: cccccc
+  etc/question:
+    color: cccccc
+  etc/wontfix:
+    color: cccccc
+  feature:
+    color: d93f0b
   help wanted:
     color: 128A0C
-  invalid:
-    color: e6e6e6
-  question:
-    color: cc317c
-  wontfix:
-    color: ffffff
+  proposal:
+    color: 5319e7
 options:
-  allow_merge_commit: true
+  allow_merge_commit: false
   allow_rebase_merge: true
   allow_squash_merge: true
   description: Sir-bot-a-lot configuration for pythondev.slack.com
   has_downloads: true
-  has_issues: false
+  has_issues: true
   has_wiki: false
-  homepage: ''
+  homepage: https://pythondev.slack.com
   name: sirbot-pythondev
   private: false
