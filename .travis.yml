@@ -3,5 +3,10 @@ language: python
 python:
   - "3.6"
 
+env:
+  - GITHUB_USER=ovv GITHUB_TOKEN=dbf0c7b404fc87519cf8b9a4af6f27bb01030aa6
+
 script:
   - python setup.py flake8
+  - pip install dothub
+  - yes | dothub repo --owner pyslackers --repository sirbot-pythondev push
