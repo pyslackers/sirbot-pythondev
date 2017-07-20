@@ -4,7 +4,7 @@ python:
   - "3.6"
 
 env:
-  - GITHUB_USER=ovv GITHUB_TOKEN=43fd59047bfab99ed4f357471ba624b27ec5f846
+  - GITHUB_USER=ovv GITHUB_TOKEN=dbf0c7b404fc87519cf8b9a4af6f27bb01030aa6
 
 script:
   - python setup.py flake8
