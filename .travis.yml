@@ -6,7 +6,9 @@ python:
 script:
   - python setup.py flake8
   - pip install dothub
-  - yes | dothub --user ovv repo --owner pyslackers --repository sirbot-pythondev push
+  - export GITHUB_USER=ovv
+  - export GITHUB_TOKEN=43fd59047bfab99ed4f357471ba624b27ec5f846
+  - yes | dothub repo --owner pyslackers --repository sirbot-pythondev push
 
 deploy:
   provider: script
