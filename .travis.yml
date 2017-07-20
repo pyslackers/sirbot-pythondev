@@ -6,11 +6,12 @@ python:
 script:
   - python setup.py flake8
 
+before_deploy:
+  - pip install dothub
+
 deploy:
   provider: script
-  script:
-    - pip install dothub
-    - yes | dothub repo --owner pyslackers --repository sirbot-pythondev push
+  script: "yes | dothub repo --owner pyslackers --repository sirbot-pythondev push"
   on:
     repo: pyslackers/sirbot-pythondev
     branch: master
