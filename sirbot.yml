@@ -28,7 +28,7 @@ slack:
 
 sqlite:
   priority: 80
-  file: /home/sirbot/sirbot.db
+  file: /var/lib/sirbot/sirbot.db
 
 pythondev:
   priority: 1
@@ -103,7 +103,7 @@ logging:
       stream: ext://sys.stdout
     file:
       class: logging.handlers.RotatingFileHandler
-      filename: /home/sirbot/sirbot.log
+      filename: /var/log/sirbot/sirbot.log
       maxBytes: 5242880
       backupCount: 7
       level: WARNING

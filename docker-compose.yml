@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  sirbot:
+    image: pyslackers/sirbot:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    restart: unless-stopped
+    expose:
+      - "8080"
