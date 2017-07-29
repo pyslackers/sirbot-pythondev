@@ -8,7 +8,10 @@ python:
 
 script:
   - python setup.py flake8
-  - docker build . -t pyslackers/sirbot.pythondev
+  - docker build . -t pyslackers/sirbot.pythondev -f docker/Dockerfile
+  - docker-compose -f docker/docker-compose.ngrok.yml build
+  - docker-compose -f docker/docker-compose.prod.yml build
+  - docker-compose -f docker/docker-compose.yml build
 
 before_deploy:
   - pip install dothub
