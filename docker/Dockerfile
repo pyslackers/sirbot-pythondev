@@ -15,8 +15,3 @@ VOLUME /var/lib/sirbot /var/log/sirbot /etc/sirbot
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["/bin/sh", "-c", "sirbot --update && exec sirbot"]
-
-
-
-
-
