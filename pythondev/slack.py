@@ -391,7 +391,7 @@ class SlackEndpoint:
         else:
             return
 
-    async def team_join(self, event, slack, _):
+    async def team_join(self, event, slack):
         await asyncio.sleep(60)
         to = await slack.users.get(event['user']['id'], dm=True)
         message = SlackMessage(to=to)
@@ -451,7 +451,7 @@ class SlackEndpoint:
 
         await slack.send(response)
 
-    async def members_joined(self, event, slack, _):
+    async def members_joined(self, event, slack):
 
         members = await slack.users.all(fetch=True, deleted=False)
         if len(members) % 1000 == 0:
