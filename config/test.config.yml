@@ -1,11 +1,12 @@
 sirbot:
-  port: 8080
+  port: 7000
   plugins:
     - sirbot.slack
     - sirbot.plugins.sqlite
     - sirbot.plugins.giphy
     - sirbot.plugins.pypi
     - sirbot.plugins.candy
+    - sirbot.plugins.github
     - sirbot.plugins.scheduler
     - pythondev
 
@@ -15,9 +16,10 @@ github:
 slack:
   priority: 20
   rtm: true
+  ping: "robot_face"
   save:
     messages: true
-    events: false
+    events: true
     commands: true
     actions: true
   endpoints:
@@ -27,14 +29,14 @@ slack:
 
 sqlite:
   priority: 80
-  file: /opt/sirbot/sirbot.db
+  file: /var/lib/sirbot/sirbot.db
 
 pythondev:
   priority: 1
   candy:
-    trigger: ":bdfl:"
+    trigger: ":smile:"
   githhub:
-    channel: community_projects
+    channel: general
   python_jobs:
     looking: >
         *Weekly who's looking thread !*
@@ -60,34 +62,34 @@ pythondev:
         <{}|Digital Ocean>. If you are planning on using Digital Ocean, please
         use our <{}|referral code>. You get 10 USD, while helping support the
         community by contributing to hosting fees for our site and
-        <@sirbotalotovv2>!
+        <@sirbotalot>!
+  files_template: >
+    Click <{}|here> to access the {}.
   files:
-    msg: >
-      Click <{}|here> to access the {}.
     intro_doc:
-      name: Intro doc
+      name: introduction doc
+      match: intro
       url: 'https://github.com/pyslackers/community/blob/master/introduction.md'
-    what_to_do:
-      name: What to do doc
-      url: 'https://pythondev.slack.com/files/ndevox/F4A137J0J/What_to_do_next_on_your_Python_journey'
+    what_next:
+      name: what's next doc
+      match: what's next
+      url: 'https://github.com/pyslackers/community/blob/master/whats_next.md'
   join: >
     Welcome to the community :tada:
-
 
     We are glad that you have decided to join us. We have documented a few
     things in the <{}|intro doc> to help you along from the beginning because
     we are grand believers in the Don't Repeat Yourself principle, and it just
-    seems so professional!
-
+    seems so professional!\n\n
 
     May your :taco:s be plentiful!
   moveto:
     msg: >
       Looks like conversation is going off topic. Please move the conversation to <#{}|{}>
 
-
 logging:
   version: 1
+  disable_existing_loggers: false
   formatters:
     simple:
       format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -97,10 +99,7 @@ logging:
       level: DEBUG
       formatter: simple
       stream: ext://sys.stdout
-  loggers:
-    sirbot:
-      level: DEBUG
-      handlers: [console]
-      propagate: no
-    sirbot.plugins.sqlite:
-      level: WARNING
+  root:
+    level: DEBUG
+    handlers: [console]
+    propagate: no
