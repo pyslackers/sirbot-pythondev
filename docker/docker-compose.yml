@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  sirbot.pythondev:
+    image: pyslackers/sirbot.pythondev:latest
+    container_name: sirbot_pythondev
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    env_file:
+      - .env
+    restart: unless-stopped
+    expose:
+      - 8080
+    volumes:
+      - ../config:/etc/sirbot

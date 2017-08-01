@@ -1,5 +1,5 @@
 sirbot:
-  port: 8080
+  port: 7000
   plugins:
     - sirbot.slack
     - sirbot.plugins.sqlite
@@ -16,26 +16,27 @@ github:
 slack:
   priority: 20
   rtm: true
-  ping: "sirbot"
+  ping: "robot_face"
   save:
     messages: true
-    events: false
+    events: true
     commands: true
     actions: true
   endpoints:
     commands: "/commands"
     actions: "/buttons"
+    events: "/events"
 
 sqlite:
   priority: 80
-  file: /home/sirbot/sirbot.db
+  file: /var/lib/sirbot/sirbot.db
 
 pythondev:
   priority: 1
   candy:
-    trigger: ":bdfl:"
-  github:
-    channel: community_projects
+    trigger: ":smile:"
+  githhub:
+    channel: general
   python_jobs:
     looking: >
         *Weekly who's looking thread !*
@@ -88,7 +89,6 @@ pythondev:
     msg: >
       Looks like conversation is going off topic. Please move the conversation to <#{}|{}>
 
-
 logging:
   version: 1
   disable_existing_loggers: false
@@ -101,17 +101,7 @@ logging:
       level: DEBUG
       formatter: simple
       stream: ext://sys.stdout
-    file:
-      class: logging.handlers.RotatingFileHandler
-      filename: /home/sirbot/sirbot.log
-      maxBytes: 5242880
-      backupCount: 7
-      level: WARNING
-      formatter: simple
-  loggers:
-    sirbot.plugins.sqlite:
-      level: WARNING
   root:
     level: DEBUG
-    handlers: [file, console]
+    handlers: [console]
     propagate: no
