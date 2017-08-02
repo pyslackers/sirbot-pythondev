@@ -9,7 +9,7 @@ python:
 script:
   - python setup.py flake8
   - cp docker/.env.example docker/.env
-  - docker build . -t pyslackers/sirbot.pythondev -f docker/Dockerfile
+  - docker build . -t pyslackers/sirbot.pythondev
   - docker-compose -f docker/docker-compose.ngrok.yml config
   - docker-compose -f docker/docker-compose.yml config
 
