@@ -1,0 +1,9 @@
+---
+ansible_ssh_port: 22
+ansible_ssh_user: root
+email: pythondev.slack@gmail.com
+sirbot_config: /etc/sirbot/prod.config.yml
+github_users:
+  - ovv
+  - mrasband
+  - seanson

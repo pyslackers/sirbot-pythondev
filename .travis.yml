@@ -1,3 +1,4 @@
+sudo: required
 language: python
 
 services:
@@ -8,9 +9,10 @@ python:
 
 script:
   - python setup.py flake8
+  - docker build . -t pyslackers/sirbot-pythondev
   - cp docker/.env.example docker/.env
-  - docker build . -t pyslackers/sirbot.pythondev
   - docker-compose -f docker/docker-compose.ngrok.yml config
+  - sudo mkdir /home/sirbot && sudo cp docker/.env.example /home/sirbot/.env
   - docker-compose -f docker/docker-compose.yml config
 
 before_deploy:

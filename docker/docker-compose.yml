@@ -1,16 +1,15 @@
 version: '3'
 
 services:
-  sirbot.pythondev:
-    image: pyslackers/sirbot.pythondev:latest
-    container_name: sirbot_pythondev
-    build:
-      context: ..
-      dockerfile: Dockerfile
+  sirbot-pythondev:
+    image: pyslackers/sirbot-pythondev:master
+    container_name: sirbot-pythondev
     env_file:
-      - .env
+      - /home/sirbot/.env
     restart: unless-stopped
-    expose:
-      - 8080
+    ports:
+      - 127.0.0.1:8080:8080
     volumes:
-      - ../config:/etc/sirbot
+      - /home/sirbot/sirbot/config:/etc/sirbot
+      - /home/sirbot/log:/var/log/sirbot
+      - /home/sirbot/data:/var/lib/sirbot

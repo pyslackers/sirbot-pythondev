@@ -127,3 +127,4 @@ debian/
 __pycache__/*
 sirbot.log
 *.db
+ansible/roles

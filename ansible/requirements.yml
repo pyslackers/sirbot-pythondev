@@ -1,0 +1,9 @@
+- src: https://github.com/pyslackers/ansible-role-common.git
+  version: master
+  name: pyslackers.common
+- src: https://github.com/pyslackers/ansible-role-docker.git
+  version: master
+  name: pyslackers.docker
+- src: https://github.com/pyslackers/ansible-role-nginx.git
+  version: master
+  name: pyslackers.nginx
