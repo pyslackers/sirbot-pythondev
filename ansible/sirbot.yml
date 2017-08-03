@@ -1,0 +1,69 @@
+---
+
+- name: Sir Bot-a-lot
+  hosts: all
+
+  vars:
+    username: sirbot
+
+  roles:
+    - role: pyslackers.common
+      tags:
+        - setup
+        - setup::common
+    - role: pyslackers.docker
+      tags:
+        - setup
+        - setup::docker
+    - role: pyslackers.nginx
+      tags:
+        - setup
+        - setup::nginx
+
+  tasks:
+    - name: "Create user {{ username }}"
+      become: true
+      user:
+        name: "{{ username }}"
+        shell: /bin/bash
+        home: "/home/{{ username }}"
+      tags:
+        - sirbot
+
+    - name: Clone source
+      become: true
+      become_user: sirbot
+      git:
+        repo: https://github.com/ovv/sirbot-pythondev.git
+        dest: "/home/{{ username }}/sirbot"
+        version: ansible-docker
+        force: yes
+      tags:
+        - sirbot
+
+    - name: Create log directory
+      file:
+        path: "/home/{{ username }}/log"
+        owner: sirbot
+        group: sirbot
+        state: directory
+      tags:
+        - sirbot
+
+    - name: Create .env file
+      template:
+        src: .env.j2
+        dest: "/home/{{ username }}/.env"
+        owner: sirbot
+        group: sirbot
+      tags:
+        - sirbot
+
+    - name: Start sirbot
+      command: "docker-compose -f docker/docker-compose.yml up -d"
+      args:
+        chdir: "/home/{{ username }}/sirbot"
+      register: docker_restart
+      changed_when: "'sirbot-pythondev is up-to-date' not in docker_restart.stderr"
+      tags:
+        - sirbot
