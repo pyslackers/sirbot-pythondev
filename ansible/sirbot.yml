@@ -59,11 +59,21 @@
       tags:
         - sirbot
 
+    - name: Pull sirbot image
+      command: "docker image pull pyslackers/sirbot-pythondev:master"
+      args:
+        chdir: "/home/{{ username }}/sirbot"
+      register: docker_pull
+      changed_when: "'Downloaded newer image' in docker_pull.stdout"
+      tags:
+        - sirbot
+
     - name: Start sirbot
       command: "docker-compose -f docker/docker-compose.yml up -d"
       args:
         chdir: "/home/{{ username }}/sirbot"
       register: docker_restart
-      changed_when: "'sirbot-pythondev is up-to-date' not in docker_restart.stderr"
+      changed_when: "'reating sirbot-pythondev' in docker_restart.stderr"
       tags:
         - sirbot
+      when: docker_pull.changed
