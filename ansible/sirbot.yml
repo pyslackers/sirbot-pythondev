@@ -41,12 +41,15 @@
       tags:
         - sirbot
 
-    - name: Create log directory
+    - name: Create log & data directories
       file:
-        path: "/home/{{ username }}/log"
+        path: "/home/{{ username }}/{{ item }}"
         owner: sirbot
         group: sirbot
         state: directory
+      with_items:
+        - log
+        - data
       tags:
         - sirbot
 
