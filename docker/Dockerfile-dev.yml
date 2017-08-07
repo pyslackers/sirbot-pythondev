@@ -1,0 +1,27 @@
+FROM python:3.6-alpine
+
+RUN apk add --update --no-cache gcc g++ && pip install dumb-init
+RUN apk add --update --no-cache libxml2-dev libxslt-dev git
+
+WORKDIR /app
+
+
+COPY sir-bot-a-lot sir-bot-a-lot
+RUN pip3 install sir-bot-a-lot/
+
+COPY sirbot-plugins sirbot-plugins
+RUN pip3 install sirbot-plugins/
+
+COPY sirbot-slack sirbot-slack
+RUN pip3 install sirbot-slack/
+
+COPY sirbot-pythondev pythondev
+
+COPY sirbot-pythondev/config/ /etc/sirbot/
+
+WORKDIR /app/pythondev
+
+VOLUME /var/lib/sirbot /var/log/sirbot /etc/sirbot
+
+ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
+CMD ["/bin/sh", "-c", "sirbot --update && exec sirbot"]
