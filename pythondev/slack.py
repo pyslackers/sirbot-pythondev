@@ -27,6 +27,9 @@ class SlackEndpoint:
         slack.add_message('hello', self.hello, mention=True,
                           flags=re.IGNORECASE)
 
+        slack.add_message('hodor', self.hodor, flags=re.IGNORECASE,
+                          channel_id='C699LH85A')
+
         slack.add_command('/admin', func=self.share_admin)
 
         slack.add_message(self.config['candy']['trigger'],
@@ -53,6 +56,15 @@ class SlackEndpoint:
     async def hello(self, message, slack, *_):
         response = message.response()
         response.text = 'Hello'
+        await slack.send(response)
+
+    async def hodor(self, message, slack, *_):
+        response = message.response()
+        response.text = '*HODOR !*'
+        response.content.username = 'Hodor'
+        response.content.icon = '''\
+https://pbs.twimg.com/media/BqBP5KzCUAA_n0X.png'''
+
         await slack.send(response)
 
     async def publish(self, message, slack, match):
