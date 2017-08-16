@@ -467,7 +467,7 @@ https://pbs.twimg.com/media/BqBP5KzCUAA_n0X.png'''
 
         members = await slack.users.all(fetch=True, deleted=False)
         if len(members) % 1000 == 0:
-            to = await slack.channels.get(name='general')
+            to = await slack.channels.get(name='lobby')
             message = SlackMessage(to=to)
             message.text = ':tada: Everyone give a warm welcome to <@{user}>' \
                            ' our {number} members ! :tada:' \
