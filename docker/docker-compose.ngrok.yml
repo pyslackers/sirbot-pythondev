@@ -22,5 +22,5 @@ services:
     env_file:
       - .env
     environment:
-     - NGROK_PORT=sirbot:8080
+     - NGROK_PORT=sirbot-pythondev:8080
     restart: unless-stopped
