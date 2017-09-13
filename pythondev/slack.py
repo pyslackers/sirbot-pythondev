@@ -485,7 +485,8 @@ https://pbs.twimg.com/media/BqBP5KzCUAA_n0X.png'''
             match = re.search(
                 "<(#|@)(?P<to_id>[A-Z0-9]*)(|.*)?>", command.text)
             if match is None:
-                response.text = 'Sorry I can not understand the destination.'
+                response.text = self.config['moveto']['error'].format(
+                    command.text)
             else:
                 to = await slack.channels.get(match.group('to_id'))
                 if to:
@@ -493,9 +494,10 @@ https://pbs.twimg.com/media/BqBP5KzCUAA_n0X.png'''
                     response.text = self.config['moveto']['msg'].format(
                         to.id, to.name)
                 else:
-                    response.text = 'Sorry I can not \
-                    understand the destination.'
+                    response.text = self.config['moveto']['error'].format(
+                        command.text)
         else:
-            response.text = 'Sorry I can not understand the destination.'
+            response.text = self.config['moveto']['error'].format(
+                command.text)
 
         await slack.send(response)

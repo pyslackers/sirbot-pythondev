@@ -87,6 +87,8 @@ pythondev:
   moveto:
     msg: >
       Looks like conversation is going off topic. Please move the conversation to <#{}|{}>
+    error: >
+      NameError: channel name {} does not exist. Please try another channel, or consult the channel listing on Slack to find an appropriate channel.
 
 
 logging:
